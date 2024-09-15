@@ -13,7 +13,7 @@ torch = "^2.4.1"
 [tool.poetry.group.test]
 
 [tool.poetry.group.test.dependencies]
-pytest = "^6.0.0"
+pytest = "^6.2.0"
 
 
 [build-system]
