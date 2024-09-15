@@ -1,7 +1,7 @@
 [tool.poetry]
 name = "knowledge-verificator"
 version = "0.1.0"
-description = ""
+description = "User's knowledge verificator"
 authors = ["Igor Sosnowicz <igor@sosnowicz.eu>"]
 readme = "README.md"
 
@@ -9,6 +9,11 @@ readme = "README.md"
 python = "^3.12"
 transformers = "^4.44.2"
 torch = "^2.4.1"
+
+[tool.poetry.group.test]
+
+[tool.poetry.group.test.dependencies]
+pytest = "^6.0.0"
 
 
 [build-system]
