@@ -9,6 +9,12 @@ readme = "README.md"
 python = "^3.12"
 transformers = "^4.44.2"
 torch = "^2.4.1"
+black = "^24.8.0"
+
+[tool.black]
+line-length = 80
+target-version = ['py312']
+include = '\.py$'
 
 [tool.poetry.group.test]
 
