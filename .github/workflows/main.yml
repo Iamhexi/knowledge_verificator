@@ -36,8 +36,11 @@ jobs:
       - name: Install the project dependencies
         run: poetry install --all-extras
 
+      - name: Reformat with black
+        run: black .
+
       - name: Run type checker
-        run: mypy
+        run: mypy --follow-imports=skip --check-untyped-defs .
 
       - name: Run ruff linter
         run: |
@@ -46,10 +49,6 @@ jobs:
       - name: Run pylint linter
         run: |
           pylint .
-
-      - name: Check tyes with mypy
-        run: |
-          mypy --follow-imports=skip --check-untyped-defs .
 
       - name: Run the automated test
         run: poetry run pytest -v
