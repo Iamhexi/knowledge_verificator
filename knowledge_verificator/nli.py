@@ -1,11 +1,10 @@
 """Natural Language Inference module with pre-trained RoBERTa-Large."""
 
 from enum import Enum
-import operator
-from transformers import AutoTokenizer, AutoModelForSequenceClassification
-import torch
 import warnings
 import logging
+from transformers import AutoTokenizer, AutoModelForSequenceClassification # type: ignore
+import torch
 
 
 class Relation(Enum):
@@ -78,12 +77,11 @@ def infer(
 
     entailment = round(predicted_probability[0], precision)
     neutral = round(predicted_probability[1], precision)
-    contradiction = round(1. - entailment - neutral, precision)
 
     return {
         Relation.ENTAILMENT : entailment,
         Relation.NEUTRAL : neutral,
-        Relation.CONTRADICTION : contradiction,
+        Relation.CONTRADICTION : round(1. - entailment - neutral, precision)
     }
 
 def infer_relation(
