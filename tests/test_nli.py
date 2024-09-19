@@ -2,14 +2,35 @@
 
 import pytest
 
-from knowledge_verificator.nli import Relation, infer_relation
+from knowledge_verificator.nli import Relation, NaturalLanguageInference
 
-@pytest.mark.parametrize('premise,hypothesis,expected', [
-    ('You know Alice.', 'You don\'t know Alice.', Relation.CONTRADICTION),
-])
-def test_basic_examples(premise: str, hypothesis: str, expected: Relation) -> None:
+
+@pytest.fixture
+def nli() -> NaturalLanguageInference:
+    """Provide NaturalLanuageInference class for tests."""
+    model = NaturalLanguageInference()
+    return model
+
+
+@pytest.mark.parametrize(
+    'premise,hypothesis,expected',
+    [
+        ('You know Alice.', "You don't know Alice.", Relation.CONTRADICTION),
+        (
+            'You are in love with Alice.',
+            'You have an intimate relationship with Alice.',
+            Relation.ENTAILMENT,
+        ),
+        (
+            'Neutrons are located in the atomic nucleus.',
+            'Wroclaw University of Science and Technology is a leading Polish university.',
+            Relation.NEUTRAL,
+        ),
+    ],
+)
+def test_basic_examples(premise: str, hypothesis: str, expected: Relation, nli) -> None:
     """
     Test if basic examples of relations between premise and hypothesis
     are assessed right by NLI module.
     """
-    assert infer_relation(premise=premise, hypothesis=hypothesis) == expected
+    assert nli.infer_relation(premise=premise, hypothesis=hypothesis) == expected

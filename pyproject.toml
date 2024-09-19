@@ -9,20 +9,38 @@ readme = "README.md"
 python = "^3.12"
 transformers = "^4.44.2"
 torch = "^2.4.1"
+pylint-pytest = "^1.1.8"
 
 [tool.poetry.group.test]
 
 [tool.poetry.group.test.dependencies]
 pytest = "^6.2.0"
-black = "^24.8.0"
 mypy = "^1.11.2"
 ruff = "^0.6.5"
 pylint = "^3.2.7"
 
-[tool.black]
-line-length = 80
-target-version = ['py312']
-include = '\.py$'
+[tool.ruff]
+line-length = 88
+indent-width = 4
+
+target-version = "py312"
+
+[tool.ruff.lint]
+select = ["E4", "E7", "E9", "F", "B"]
+
+# Avoid enforcing certain rules' violations
+ignore = []
+
+# 3. Avoid trying to fix flake8-bugbear (`B`) violations.
+unfixable = ["B"]
+
+# 4. Ignore `E402` (import violations) in all `__init__.py` files, and in selected subdirectories.
+[tool.ruff.lint.per-file-ignores]
+"__init__.py" = ["E402"]
+"**/{tests,docs,tools}/*" = ["E402"]
+
+[tool.ruff.format]
+quote-style = "single"
 
 [build-system]
 requires = ["poetry-core"]
