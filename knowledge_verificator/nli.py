@@ -77,6 +77,7 @@ class NaturalLanguageInference:
         )
 
         # remember bart doesn't have 'token_type_ids', remove the line below if you are using bart.
+        token_type_ids = None
         if self._hg_model_hub_name != self._available_models['bart']:
             token_type_ids = (
                 torch.Tensor(tokenized_input_seq_pair['token_type_ids'])
