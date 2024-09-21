@@ -28,9 +28,13 @@ def nli() -> NaturalLanguageInference:
         ),
     ],
 )
-def test_basic_examples(premise: str, hypothesis: str, expected: Relation, nli) -> None:
+def test_basic_examples(
+    premise: str, hypothesis: str, expected: Relation, nli
+) -> None:
     """
     Test if basic examples of relations between premise and hypothesis
     are assessed right by NLI module.
     """
-    assert nli.infer_relation(premise=premise, hypothesis=hypothesis) == expected
+    assert (
+        nli.infer_relation(premise=premise, hypothesis=hypothesis) == expected
+    )

@@ -15,9 +15,15 @@ class QuestionGeneration:  # pylint: disable=too-few-public-methods
             'ZhangCheng/T5-Base-Fine-Tuned-for-Question-Generation'
         )
 
-        self.model = T5ForConditionalGeneration.from_pretrained(self.trained_model_path)
-        self.tokenizer = T5Tokenizer.from_pretrained(self.trained_tokenizer_path)
-        self.device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
+        self.model = T5ForConditionalGeneration.from_pretrained(
+            self.trained_model_path
+        )
+        self.tokenizer = T5Tokenizer.from_pretrained(
+            self.trained_tokenizer_path
+        )
+        self.device = torch.device(
+            'cuda' if torch.cuda.is_available() else 'cpu'
+        )
         self.model = self.model.to(self.device)
         self.model.eval()
 
@@ -40,6 +46,8 @@ class QuestionGeneration:  # pylint: disable=too-few-public-methods
             input_ids=input_ids, attention_mask=attention_mask
         )
         question = self.tokenizer.decode(
-            outputs[0], skip_special_tokens=True, clean_up_tokenization_spaces=True
+            outputs[0],
+            skip_special_tokens=True,
+            clean_up_tokenization_spaces=True,
         )
         return {'question': question, 'answer': answer, 'context': context}

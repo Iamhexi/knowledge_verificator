@@ -30,15 +30,22 @@ if __name__ == '__main__':
         chosen_answer,
     )
 
-    # TODO: Implement the module choosing a right phrase as a worthy answer. Skip word such as: like, the, a, for, what (How are they collectively called?)
-    question_with_context = qg_module.generate(answer=chosen_answer, context=paragraph)
+    # TODO: Implement the module choosing a right phrase as a worthy answer.
+    # Skip word such as: like, the, a, for, what (How are they collectively called?)
+    question_with_context = qg_module.generate(
+        answer=chosen_answer, context=paragraph
+    )
     question = question_with_context['question']
-    logger.debug('Question Generation module has supplied the question: %s', question)
+    logger.debug(
+        'Question Generation module has supplied the question: %s', question
+    )
 
     user_answer = input(f'Answer the question. {question}')
 
     nli_module = NaturalLanguageInference()
-    relation = nli_module.infer_relation(premise=paragraph, hypothesis=user_answer)
+    relation = nli_module.infer_relation(
+        premise=paragraph, hypothesis=user_answer
+    )
 
     match relation:
         case Relation.ENTAILMENT:
