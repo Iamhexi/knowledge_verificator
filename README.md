@@ -3,6 +3,14 @@
 **Knowledge Verificator** is a tool for self-learning. It employs *Natural Language Processing* (NLP) techniques to facilitate and increase effectiveness of self-study.
 The project has been created as the Bachelor's Thesis of Igor Sosnowicz.
 
+Using **Knowledge Verificator** is simple. Step by step:
+1. Insert a paragraph you want to teach yourself or choose something from a databaset of predefined ones.
+1. **Knowledge Verificator** generates a question for you.
+1. You answer the question.
+1. Your question is evaluated and you get the feedback.
+1. The process repeats as long as you like.
+
+
 ## Installation
 
 ### Install with `pipx`
