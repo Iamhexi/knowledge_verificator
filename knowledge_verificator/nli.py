@@ -3,6 +3,7 @@
 from enum import Enum
 import warnings
 import logging
+from transformers import AutoTokenizer, AutoModelForSequenceClassification  # type: ignore[import-untyped]
 from transformers import AutoTokenizer, AutoModelForSequenceClassification  # type: ignore
 import torch
 
