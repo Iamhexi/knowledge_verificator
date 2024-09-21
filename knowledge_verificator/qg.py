@@ -4,20 +4,20 @@ import torch
 from transformers import T5Tokenizer, T5ForConditionalGeneration  # type: ignore[import-untyped]
 
 
-class QuestionGeneration:
+class QuestionGeneration:  # pylint: disable=too-few-public-methods
     """Class for generating question based on supplied context."""
 
     def __init__(self) -> None:
         self.trained_model_path = (
-            "ZhangCheng/T5-Base-Fine-Tuned-for-Question-Generation"
+            'ZhangCheng/T5-Base-Fine-Tuned-for-Question-Generation'
         )
         self.trained_tokenizer_path = (
-            "ZhangCheng/T5-Base-Fine-Tuned-for-Question-Generation"
+            'ZhangCheng/T5-Base-Fine-Tuned-for-Question-Generation'
         )
 
         self.model = T5ForConditionalGeneration.from_pretrained(self.trained_model_path)
         self.tokenizer = T5Tokenizer.from_pretrained(self.trained_tokenizer_path)
-        self.device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+        self.device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
         self.model = self.model.to(self.device)
         self.model.eval()
 
@@ -32,14 +32,14 @@ class QuestionGeneration:
         Returns:
             dict[str, str]: Dictionary with a generated question, and a provided answer and context.
         """
-        input_text = f"<answer> {answer} <context> {context} "
-        encoding = self.tokenizer.encode_plus(input_text, return_tensors="pt")
-        input_ids = encoding["input_ids"].to(self.device)
-        attention_mask = encoding["attention_mask"].to(self.device)
+        input_text = f'<answer> {answer} <context> {context} '
+        encoding = self.tokenizer.encode_plus(input_text, return_tensors='pt')
+        input_ids = encoding['input_ids'].to(self.device)
+        attention_mask = encoding['attention_mask'].to(self.device)
         outputs = self.model.generate(
             input_ids=input_ids, attention_mask=attention_mask
         )
         question = self.tokenizer.decode(
             outputs[0], skip_special_tokens=True, clean_up_tokenization_spaces=True
         )
-        return {"question": question, "answer": answer, "context": context}
+        return {'question': question, 'answer': answer, 'context': context}
