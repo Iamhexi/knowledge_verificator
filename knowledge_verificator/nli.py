@@ -76,7 +76,9 @@ class NaturalLanguageInference:
         )
 
         input_ids = (
-            torch.Tensor(tokenized_input_seq_pair['input_ids']).long().unsqueeze(0)
+            torch.Tensor(tokenized_input_seq_pair['input_ids'])
+            .long()
+            .unsqueeze(0)
         )
 
         token_type_ids = None
@@ -89,7 +91,9 @@ class NaturalLanguageInference:
             )
 
         attention_mask = (
-            torch.Tensor(tokenized_input_seq_pair['attention_mask']).long().unsqueeze(0)
+            torch.Tensor(tokenized_input_seq_pair['attention_mask'])
+            .long()
+            .unsqueeze(0)
         )
 
         outputs = self.model(
@@ -109,7 +113,9 @@ class NaturalLanguageInference:
         return {
             Relation.ENTAILMENT: entailment,
             Relation.NEUTRAL: neutral,
-            Relation.CONTRADICTION: round(1.0 - entailment - neutral, precision),
+            Relation.CONTRADICTION: round(
+                1.0 - entailment - neutral, precision
+            ),
         }
 
     def infer_relation(
@@ -121,7 +127,9 @@ class NaturalLanguageInference:
         Infer the most probable type of relationship between `premise` and
         `hypothesis`.
         """
-        inference = self.infer(premise=premise, hypothesis=hypothesis, precision=10)
+        inference = self.infer(
+            premise=premise, hypothesis=hypothesis, precision=10
+        )
 
         max_probability = 0.0
         most_probable = Relation.CONTRADICTION
