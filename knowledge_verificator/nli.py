@@ -3,8 +3,10 @@
 from enum import Enum
 import warnings
 import logging
-from transformers import AutoTokenizer, AutoModelForSequenceClassification  # type: ignore[import-untyped]
-from transformers import AutoTokenizer, AutoModelForSequenceClassification  # type: ignore
+from transformers import (  # type: ignore[import-untyped]
+    AutoTokenizer,
+    AutoModelForSequenceClassification,
+)
 import torch
 
 
@@ -77,8 +79,8 @@ class NaturalLanguageInference:
             torch.Tensor(tokenized_input_seq_pair['input_ids']).long().unsqueeze(0)
         )
 
-        # remember bart doesn't have 'token_type_ids', remove the line below if you are using bart.
         token_type_ids = None
+        # `bart` model does not have `token_type_ids`.
         if self._hg_model_hub_name != self._available_models['bart']:
             token_type_ids = (
                 torch.Tensor(tokenized_input_seq_pair['token_type_ids'])
