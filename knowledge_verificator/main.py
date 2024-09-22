@@ -1,6 +1,6 @@
 """Main module with CLI definition."""
 
-from logger import logger, console
+from io_handler import logger, console
 from rich.text import Text
 
 from knowledge_verificator.answer_chooser import AnswerChooser
@@ -37,7 +37,7 @@ if __name__ == '__main__':
     )
 
     console.print(
-        f'Answer the question with full sentence. {question} \n Your answer.: '
+        f'\nAnswer the question with full sentence. {question} \nYour answer: '
     )
     user_answer = input().strip()
 
