@@ -13,6 +13,7 @@ pylint-pytest = "^1.1.8"
 sentencepiece = "^0.2.0"
 nltk = "^3.9.1"
 rich = "^13.8.1"
+tqdm = "^4.66.5"
 
 [tool.poetry.group.test]
 

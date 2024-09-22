@@ -1,8 +1,7 @@
 """Natural Language Inference module with pre-trained RoBERTa-Large."""
 
-from enum import Enum
-import warnings
 import logging
+from enum import Enum
 from transformers import (  # type: ignore[import-untyped]
     AutoTokenizer,
     AutoModelForSequenceClassification,
@@ -22,7 +21,8 @@ class NaturalLanguageInference:
     """Implementation of Natural Language Inference module."""
 
     def __init__(self) -> None:
-        self.max_length = 256
+        logging.getLogger('transformers.modeling_utils').setLevel(logging.ERROR)
+        self.max_new_tokens = 256
         self._available_models = {
             'roberta': 'ynie/roberta-large-snli_mnli_fever_anli_R1_R2_R3-nli',
             'albert': 'ynie/albert-xxlarge-v2-snli_mnli_fever_anli_R1_R2_R3-nli',
@@ -31,7 +31,9 @@ class NaturalLanguageInference:
             'xlnet': 'ynie/xlnet-large-cased-snli_mnli_fever_anli_R1_R2_R3-nli',
         }
         self._hg_model_hub_name = self._available_models['roberta']
-        self.tokenizer = AutoTokenizer.from_pretrained(self._hg_model_hub_name)
+        self.tokenizer = AutoTokenizer.from_pretrained(
+            self._hg_model_hub_name, clean_up_tokenization_spaces=True
+        )
         self.model = AutoModelForSequenceClassification.from_pretrained(
             self._hg_model_hub_name
         )
@@ -62,15 +64,10 @@ class NaturalLanguageInference:
             their corresponding probabilities.
         """
 
-        logging.getLogger('transformers').setLevel(logging.ERROR)
-        warnings.filterwarnings(
-            'ignore', message='`clean_up_tokenization_spaces` was not set.'
-        )
-
         tokenized_input_seq_pair = self.tokenizer.encode_plus(
             premise,
             hypothesis,
-            max_length=self.max_length,
+            max_length=self.max_new_tokens,
             return_token_type_ids=True,
             truncation=True,
         )

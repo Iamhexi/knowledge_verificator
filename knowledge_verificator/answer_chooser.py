@@ -1,17 +1,22 @@
 """Module with AnswerChooser, which finds a best candidate for an answer in a paragraph."""
 
 import random
-import nltk
+import nltk  # type: ignore[import-untyped]
 from nltk.corpus import wordnet
+from tqdm import tqdm  # type: ignore[import-untyped]
 
 # FIXME: Write docstrings.
 
 
 class AnswerChooser:
     def __init__(self) -> None:
-        nltk.download('wordnet')
-        nltk.download('stopwords')
-        nltk.download('punkt_tab')
+        dependencies = ('wordnet', 'stopwords', 'punkt')
+        for dependency in tqdm(
+            dependencies,
+            desc='Downloading required files',
+            bar_format='{l_bar}{bar}| {n_fmt}/{total_fmt} files',
+        ):
+            nltk.download(dependency, quiet=True)
 
     def remove_stopwords(self, text: str) -> str:
         """
@@ -71,7 +76,7 @@ class AnswerChooser:
         else:
             return 'n/a'
 
-    def choose_answer(self, paragraph: str) -> str:
+    def choose_answer(self, paragraph: str) -> str | None:
         paragraph = self.remove_stopwords(paragraph)
         words = paragraph.split(' ')
         # FIXME: Refactor not to use three times the same function...
@@ -79,7 +84,10 @@ class AnswerChooser:
             self.santize(word)
             for word in words
             if self.santize(word)
-            and self.find_part_of_speech(self.santize(word)) == 'n/a'
+            and self.find_part_of_speech(self.santize(word))
+            == 'n/a'  # If not found 'n/a', turn to 'noun'
         ]
+        if not words:
+            return None
 
         return random.choice(words)
