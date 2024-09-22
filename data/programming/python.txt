@@ -1,0 +1,9 @@
+Programming in Python
+---
+python, programming language
+---
+Python programming language is used for system scripting, back-end development for the web and Machine Learning applications.
+
+Python has a beginner-friendly syntax but is tough to master. It was created by a Dutch programmer in 90'.
+
+Python is known for its simple `Hello, world!`, which has exactly one line `print('Hello, world!')`.
