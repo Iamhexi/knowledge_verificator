@@ -1,8 +1,8 @@
 """Main module with CLI definition."""
 
-from io_handler import logger, console
 from rich.text import Text
 
+from knowledge_verificator.io_handler import logger, console
 from knowledge_verificator.answer_chooser import AnswerChooser
 from knowledge_verificator.nli import NaturalLanguageInference, Relation
 from knowledge_verificator.qg import QuestionGeneration
@@ -48,14 +48,14 @@ if __name__ == '__main__':
 
     match relation:
         case Relation.ENTAILMENT:
-            feedback = 'correct'
-            style = 'green'
+            FEEDBACK = 'correct'
+            STYLE = 'green'
         case Relation.CONTRADICTION:
-            feedback = f'wrong. Correct answer is {chosen_answer}'
-            style = 'red'
+            FEEDBACK = f'wrong. Correct answer is {chosen_answer}'
+            STYLE = 'red'
         case Relation.NEUTRAL:
-            feedback = 'not directly associated with the posed question'
-            style = 'yellow'
+            FEEDBACK = 'not directly associated with the posed question'
+            STYLE = 'yellow'
 
-    feedback_text = Text(f'Your answer is {feedback}.', style=style)
+    feedback_text = Text(f'Your answer is {FEEDBACK}.', style=STYLE)
     console.print(feedback_text)
