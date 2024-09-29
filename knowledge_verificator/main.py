@@ -23,6 +23,8 @@ if __name__ == '__main__':
             'Please, try providing a longer or more specific paragraph.'
         )
 
+    console.clear()
+
     logger.debug(
         'The `%s` has been chosen as the answer, based on which the question will be generated.',
         chosen_answer,
