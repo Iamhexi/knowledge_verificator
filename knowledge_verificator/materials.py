@@ -1,7 +1,6 @@
 """Module with tools for managing learning material."""
 
 from dataclasses import dataclass
-import os
 from pathlib import Path
 
 
@@ -22,7 +21,8 @@ class MaterialDatabase:
 
     def __init__(self, materials_dir: Path | str) -> None:
         """
-        Load all learning materials from `material_dir` directory.
+        Load all learning materials from `material_dir` directory
+        into an internal storage.
 
         Args:
             materials_dir (Path | str): Path to directory with learning materials.
@@ -40,13 +40,10 @@ class MaterialDatabase:
             )
 
         self.materials: list[Material] = []
-        directories = os.listdir(materials_dir)
-        for directory in directories:
-            dir_path = materials_dir / directory
-            files = [file for file in dir_path.iterdir() if file.is_file()]
-            for file in files:
-                material_path = dir_path / file
-                material = self.load_material(material_path)
+        for directory_path, _, filenames in materials_dir.walk():
+            for filename in filenames:
+                path = Path(directory_path).joinpath(filename)
+                material = self.load_material(path)
                 self.materials.append(material)
 
     def load_material(self, path: Path) -> Material:
