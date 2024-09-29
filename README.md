@@ -68,17 +68,11 @@ You have to have the following tools installed:
     ```bash
     poetry install --with test
     ```
-
-1. Build the package.
-    ```bash
-    poetry build
-    ```
-
 ---
 As a one-liner:
 
 ```bash
-git clone git@github.com:Iamhexi/knowledge_verificator.git && cd knowledge_verificator && poetry install --with test && poetry build
+git clone git@github.com:Iamhexi/knowledge_verificator.git && cd knowledge_verificator && poetry install --with test
 ```
 ---
 
