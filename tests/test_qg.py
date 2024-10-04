@@ -8,7 +8,10 @@ from knowledge_verificator.qg import QuestionGeneration
 
 @pytest.fixture
 def qg():
-    """Provide non-deterministically initialized instance of the `QuestionGeneration` class."""
+    """
+    Provide non-deterministically initialized instance of
+    the `QuestionGeneration` class.
+    """
     set_seed(0)
     question_generation = QuestionGeneration()
     return question_generation
