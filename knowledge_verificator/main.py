@@ -7,6 +7,7 @@ from knowledge_verificator.answer_chooser import AnswerChooser
 from knowledge_verificator.materials import MaterialDatabase
 from knowledge_verificator.nli import NaturalLanguageInference, Relation
 from knowledge_verificator.qg import QuestionGeneration
+from knowledge_verificator.utils.string import clip_text
 
 
 if __name__ == '__main__':
@@ -61,8 +62,28 @@ if __name__ == '__main__':
                     continue
 
                 material = material_db.materials[chosen_index]
-                # TODO: A user should be able to choose a paragraph.
-                paragraph = material.paragraphs[0]
+
+                MAX_LENGTH_OF_CLIPPED_PARAGRAPH = 15
+                console.print('Available paragraphs: ')
+                for i, paragraph in enumerate(material.paragraphs):
+                    console.print(
+                        f'{i+1} {clip_text(paragraph, MAX_LENGTH_OF_CLIPPED_PARAGRAPH)}'
+                    )
+
+                console.print('Which paragraph you want to learn? ')
+                paragraph_choice = input()
+
+                if not paragraph_choice.isnumeric():
+                    console.print(INCORRECT_CHOICE_WARNING)
+                    continue
+
+                chosen_index = int(paragraph_choice) - 1
+                if chosen_index < 0 or chosen_index >= len(material.paragraphs):
+                    console.print(INCORRECT_CHOICE_WARNING)
+                    continue
+
+                # TODO: Refactor this fragment to apply DRY principle.
+                paragraph = material.paragraphs[chosen_index]
 
                 console.print('Learn this paragraph: ')
                 console.print(paragraph)
