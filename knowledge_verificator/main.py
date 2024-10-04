@@ -7,7 +7,7 @@ from knowledge_verificator.answer_chooser import AnswerChooser
 from knowledge_verificator.materials import MaterialDatabase
 from knowledge_verificator.nli import NaturalLanguageInference, Relation
 from knowledge_verificator.qg import QuestionGeneration
-from knowledge_verificator.utils.string import clip_text
+from knowledge_verificator.utils.menu import choose_from_menu
 
 
 if __name__ == '__main__':
@@ -40,50 +40,18 @@ if __name__ == '__main__':
                     )
                     continue
 
-                console.print('Available materials:')
-                for i, material in enumerate(material_db.materials):
-                    console.print(f'[{i+1}] {material.title}')
-                material_choice = input('Your choice: ')
-                console.print()
+                material_titles = [
+                    material.title for material in material_db.materials
+                ]
+                material = choose_from_menu(material_titles, 'materials')
+                if material is None:
+                    continue
 
-                INCORRECT_CHOICE_WARNING = (
-                    'This is incorrect choice. Next time, provide a number '
-                    'next to a material from the list of available ones.'
+                paragraph = str(
+                    choose_from_menu(material.paragraphs, 'paragraphs')
                 )
-                if not material_choice.isnumeric():
-                    console.print(INCORRECT_CHOICE_WARNING)
+                if paragraph is None:
                     continue
-
-                chosen_index = int(material_choice) - 1
-                if chosen_index < 0 or chosen_index >= len(
-                    material_db.materials
-                ):
-                    console.print(INCORRECT_CHOICE_WARNING)
-                    continue
-
-                material = material_db.materials[chosen_index]
-
-                MAX_LENGTH_OF_CLIPPED_PARAGRAPH = 15
-                console.print('Available paragraphs: ')
-                for i, paragraph in enumerate(material.paragraphs):
-                    console.print(
-                        f'{i+1} {clip_text(paragraph, MAX_LENGTH_OF_CLIPPED_PARAGRAPH)}'
-                    )
-
-                console.print('Which paragraph you want to learn? ')
-                paragraph_choice = input()
-
-                if not paragraph_choice.isnumeric():
-                    console.print(INCORRECT_CHOICE_WARNING)
-                    continue
-
-                chosen_index = int(paragraph_choice) - 1
-                if chosen_index < 0 or chosen_index >= len(material.paragraphs):
-                    console.print(INCORRECT_CHOICE_WARNING)
-                    continue
-
-                # TODO: Refactor this fragment to apply DRY principle.
-                paragraph = material.paragraphs[chosen_index]
 
                 console.print('Learn this paragraph: ')
                 console.print(paragraph)
