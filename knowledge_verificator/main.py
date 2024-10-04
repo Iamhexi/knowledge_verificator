@@ -43,31 +43,37 @@ if __name__ == '__main__':
                 material_titles = [
                     material.title for material in material_db.materials
                 ]
-                material = choose_from_menu(material_titles, 'materials')
+                material = choose_from_menu(
+                    material_db.materials,
+                    plural_name='materials',
+                    attribute_to_show='title',
+                )
+
                 if material is None:
                     continue
 
-                paragraph = str(
+                PARAGRAPH = str(
                     choose_from_menu(material.paragraphs, 'paragraphs')
                 )
-                if paragraph is None:
+
+                if PARAGRAPH is None:
                     continue
 
                 console.print('Learn this paragraph: ')
-                console.print(paragraph)
+                console.print(PARAGRAPH)
                 console.print()
                 input('Press ENTER when ready.')
 
             case '2':
                 console.print('Enter a paragraph you would like to learn: ')
-                paragraph = input().strip()
+                PARAGRAPH = input().strip()
 
             case _:
                 console.print('Unrecognised option, try again!')
 
-        logger.debug('Loaded the following paragraph:\n %s', paragraph)
+        logger.debug('Loaded the following paragraph:\n %s', PARAGRAPH)
 
-        chosen_answer = chooser.choose_answer(paragraph=paragraph)
+        chosen_answer = chooser.choose_answer(paragraph=PARAGRAPH)
         if not chosen_answer:
             raise ValueError(
                 'The supplied paragaph is either too short or too general. '
@@ -83,7 +89,7 @@ if __name__ == '__main__':
         )
 
         question_with_context = qg_module.generate(
-            answer=chosen_answer, context=paragraph
+            answer=chosen_answer, context=PARAGRAPH
         )
         question = question_with_context['question']
         logger.debug(
@@ -97,7 +103,7 @@ if __name__ == '__main__':
 
         nli_module = NaturalLanguageInference()
         relation = nli_module.infer_relation(
-            premise=paragraph, hypothesis=user_answer
+            premise=PARAGRAPH, hypothesis=user_answer
         )
 
         match relation:

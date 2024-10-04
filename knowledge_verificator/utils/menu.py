@@ -6,7 +6,10 @@ from knowledge_verificator.utils.string import clip_text
 
 
 def choose_from_menu(
-    menu_elements: list[str], plural_name: str, max_line_width: int = 40
+    menu_elements: list[Any],
+    plural_name: str,
+    attribute_to_show: str = '',
+    max_line_width: int = 40,
 ) -> Any | None:
     """
     Prompt a user to choose an element from a list via terminal.
@@ -15,15 +18,20 @@ def choose_from_menu(
         menu_elements (list[str]): List of elements to choose from.
             Elements should be convertible to `str` (implement `__str__` method).
         plural_name (str): Plural name of the elements. For example: options, paragraphs or names.
+        attribute_to_show (str): Attribute, which should be shown. If empty, print an entire object.
         max_line_width (int): Maximum line width in number of columns. By default: 40.
 
     Returns:
-        any | None: Element of a list or None if a user provided incorrect
-            value via a terminal.
+        any | None: Element of a list or None if a user provided incorrect value via a terminal.
     """
     console.print(f'Available {plural_name}:')
     for i, element in enumerate(menu_elements):
-        console.print(f'[{i+1}] {clip_text(element, max_line_width)}')
+        option_name = ''
+        if attribute_to_show:
+            option_name = getattr(element, attribute_to_show)
+        else:
+            option_name = element
+        console.print(f'[{i+1}] {clip_text(option_name, max_line_width)}')
     material_choice = input('Your choice: ')
     console.print()
 

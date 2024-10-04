@@ -39,3 +39,5 @@ def test_basic_question_generation(
     }
 
     assert output == expected
+
+    # https://huggingface.co/sentence-transformers/all-distilroberta-v1
