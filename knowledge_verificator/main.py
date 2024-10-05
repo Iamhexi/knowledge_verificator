@@ -24,11 +24,11 @@ if __name__ == '__main__':
         match user_choice:
             case '1':
                 try:
-                    DB_PATH = './data'
-                    material_db = MaterialDatabase(DB_PATH)
+                    STORAGE_PATH = './learning_assets'
+                    material_db = MaterialDatabase(STORAGE_PATH)
                 except FileNotFoundError:
                     console.print(
-                        f'In the `{DB_PATH}` there is no database. '
+                        f'In the `{STORAGE_PATH}` there is no database. '
                         'Try using your own materials.'
                     )
                     continue
