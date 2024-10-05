@@ -11,6 +11,7 @@ from pathlib import Path
 from typing import Callable
 
 import numpy as np
+from tqdm import tqdm
 
 from knowledge_verificator.utils.filesystem import create_text_file
 
@@ -43,7 +44,6 @@ def generate_test_summary_in_csv(results: list[Result]) -> str:
     report = ''
     report += 'model_name,metric,average_score\n'
     for result in results:
-        print('Data points: ', result.data_points)
         average_score = round(np.average(result.data_points), 3)
         report += f'{result.model_name},{result.metric.name},{average_score}\n'
 
@@ -65,7 +65,6 @@ class ExperimentRunner:
 
     def _collect_experiments(self) -> list[Callable]:
         experiment_functions: list[Callable] = []
-        # TODO: Implement this.
         excluded = ('__init__.py', 'results', 'runner.py')
         for file in os.listdir(path=self.directory):
             file_path = self.directory / file
@@ -119,13 +118,17 @@ class ExperimentRunner:
         Create a file with results in subdirectory of the provided (in constructor) `directory`.
         """
         results: list[Result] = []
-        for experiment in self._collect_experiments():
+        for experiment in tqdm(
+            desc='Running experiments',
+            unit='experiment',
+            iterable=self._collect_experiments(),
+        ):
             result = experiment()
             results.append(result)
 
         experimental_results = generate_test_summary_in_csv(results=results)
         current_datetime = datetime.now().strftime('%H_%M_%S_%Y_%m_%d')
         create_text_file(
-            path=f'tests/results/qg_{current_datetime}',
+            path=f'tests/model/results/qg_{current_datetime}.csv',
             content=experimental_results,
         )
