@@ -1,1 +1,1 @@
-"""Module with tests."""
+"""Module with all tests."""

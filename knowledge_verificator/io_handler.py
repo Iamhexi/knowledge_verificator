@@ -33,6 +33,13 @@ def get_argument_parser() -> ArgumentParser:
         ),
     )
 
+    arg_parser.add_argument(
+        '-e',
+        '--experiments',
+        default=False,
+        help='Run experiments instead of running an interactive mode.',
+    )
+
     return arg_parser
 
 
