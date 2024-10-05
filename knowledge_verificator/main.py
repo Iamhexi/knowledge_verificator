@@ -1,28 +1,35 @@
 """Main module with CLI definition."""
 
+from pathlib import Path
 from rich.text import Text
 
-from knowledge_verificator.io_handler import logger, console
+from knowledge_verificator.io_handler import logger, console, args
 from knowledge_verificator.answer_chooser import AnswerChooser
 from knowledge_verificator.materials import MaterialDatabase
 from knowledge_verificator.nli import NaturalLanguageInference, Relation
 from knowledge_verificator.qg import QuestionGeneration
 from knowledge_verificator.utils.menu import choose_from_menu
+from tests.model.runner import ExperimentRunner
 
 
 if __name__ == '__main__':
     qg_module = QuestionGeneration()
     chooser = AnswerChooser()
 
+    if args.experiments:
+        experiment_directory = Path('tests/model')
+        runner = ExperimentRunner(directory=experiment_directory)
+        runner.run()
+        exit(0)
+
     while True:
-        console.print('Where you want to learn from?')
-        console.print('[1] knowledge database')
-        console.print('[2] my own paragraph')
-        user_choice = input('Your choice: ')
-        console.print()
+        options = ['knowledge database', 'my own paragraph']
+        user_choice = choose_from_menu(
+            menu_elements=options, plural_name='options'
+        )
 
         match user_choice:
-            case '1':
+            case 'knowledge database':
                 try:
                     STORAGE_PATH = './learning_assets'
                     material_db = MaterialDatabase(STORAGE_PATH)
@@ -64,7 +71,7 @@ if __name__ == '__main__':
                 console.print()
                 input('Press ENTER when ready.')
 
-            case '2':
+            case 'my own paragraph':
                 console.print('Enter a paragraph you would like to learn: ')
                 PARAGRAPH = input().strip()
 
