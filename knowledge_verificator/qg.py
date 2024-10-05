@@ -1,5 +1,6 @@
 """Module with question generation model."""
 
+import warnings
 import torch
 from transformers import T5Tokenizer, T5ForConditionalGeneration  # type: ignore[import-untyped]
 
@@ -8,6 +9,7 @@ class QuestionGeneration:  # pylint: disable=too-few-public-methods
     """Class for generating question based on supplied context."""
 
     def __init__(self) -> None:
+        warnings.filterwarnings('ignore', category=FutureWarning)
         self.trained_model_path = (
             'ZhangCheng/T5-Base-Fine-Tuned-for-Question-Generation'
         )
@@ -16,7 +18,7 @@ class QuestionGeneration:  # pylint: disable=too-few-public-methods
         )
 
         self.model = T5ForConditionalGeneration.from_pretrained(
-            self.trained_model_path
+            self.trained_model_path,
         )
 
         self.tokenizer = T5Tokenizer.from_pretrained(
