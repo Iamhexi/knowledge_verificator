@@ -28,7 +28,7 @@ def get_argument_parser() -> ArgumentParser:
         action='store_true',
         default=False,
         help=(
-            'Turn on debug mode, which shows all logs including those from '
+            'Turn on a debug mode, which shows all logs including those from '
             '`debug` and `info` levels.'
         ),
     )

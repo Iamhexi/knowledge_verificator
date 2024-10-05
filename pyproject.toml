@@ -47,6 +47,11 @@ unfixable = ["B"]
 [tool.ruff.format]
 quote-style = "single"
 
+[tool.mypy]
+# Exclude module causing Internal error in mypy.
+exclude = "tests/model/*"
+
+
 [build-system]
 requires = ["poetry-core"]
 build-backend = "poetry.core.masonry.api"
