@@ -6,6 +6,7 @@ import pytest
 from knowledge_verificator.utils.filesystem import in_directory
 
 
+@pytest.mark.code_quality
 @pytest.mark.parametrize(
     'directory, file, exists_there',
     (

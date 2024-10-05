@@ -12,6 +12,7 @@ def nli() -> NaturalLanguageInference:
     return model
 
 
+@pytest.mark.code_quality
 @pytest.mark.parametrize(
     'premise,hypothesis,expected',
     [

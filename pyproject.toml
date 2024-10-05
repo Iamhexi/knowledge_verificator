@@ -46,6 +46,12 @@ unfixable = ["B"]
 [tool.ruff.format]
 quote-style = "single"
 
+[tool.pytest.ini_options]
+markers = [
+    "model_performance: measures models' performance on more advanced metrics.",
+    "code_quality: includes unit, integration, and other code quality tests. Also santity checks on models."
+]
+
 [build-system]
 requires = ["poetry-core"]
 build-backend = "poetry.core.masonry.api"

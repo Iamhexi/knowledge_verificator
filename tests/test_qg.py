@@ -17,6 +17,7 @@ def qg():
     return question_generation
 
 
+@pytest.mark.code_quality
 @pytest.mark.parametrize(
     'question,answer,context',
     (
