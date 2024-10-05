@@ -1,6 +1,7 @@
 """Main module with CLI definition."""
 
 from pathlib import Path
+import sys
 from rich.text import Text
 
 from knowledge_verificator.io_handler import logger, console, args
@@ -20,7 +21,7 @@ if __name__ == '__main__':
         experiment_directory = Path('tests/model')
         runner = ExperimentRunner(directory=experiment_directory)
         runner.run()
-        exit(0)
+        sys.exit(0)
 
     while True:
         options = ['knowledge database', 'my own paragraph']

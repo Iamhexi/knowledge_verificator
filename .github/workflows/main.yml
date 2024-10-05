@@ -37,7 +37,8 @@ jobs:
         run: poetry install --all-extras
 
       - name: Run type checker
-        run: poetry run mypy --follow-imports=skip --check-untyped-defs .
+        run: |
+          poetry run mypy --follow-imports=skip --check-untyped-defs .
 
       - name: Run ruff linter and formatter
         run: |

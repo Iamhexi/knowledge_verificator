@@ -31,7 +31,7 @@ def measure_qg_performance_with_cosine_similarity() -> Result:
     qg = QuestionGeneration()
     metric = Metric.COSINE_SIMILARITY
     model_name = qg.trained_model_path.split('/')[1]
-    data_points = np.zeros(shape=(len(test_data), 1))
+    data_points: np.ndarray = np.zeros(shape=(len(test_data), 1))
 
     for i, test_item in enumerate(test_data):
         suggested_answer = test_item['answer']
