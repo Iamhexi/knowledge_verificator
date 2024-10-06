@@ -14,6 +14,7 @@ import numpy as np
 from tqdm import tqdm
 
 from knowledge_verificator.utils.filesystem import create_text_file
+from knowledge_verificator.io_handler import console
 
 
 class Metric(Enum):
@@ -75,6 +76,9 @@ class ExperimentRunner:
             if not os.path.isfile(file_path):
                 continue
 
+            if not file.endswith('.py'):
+                continue
+
             experiment_functions.extend(
                 self._collect_functions_from_file(file_path=file_path)
             )
@@ -106,9 +110,13 @@ class ExperimentRunner:
 
         spec.loader.exec_module(module)
 
-        # Get all functions in the module.
+        # Only function performing experiments: measure_
         return [
-            func for _, func in inspect.getmembers(module, inspect.isfunction)
+            func
+            for func_name, func in inspect.getmembers(
+                module, inspect.isfunction
+            )
+            if func_name.startswith('measure_')
         ]
 
     def run(self) -> None:
@@ -123,6 +131,7 @@ class ExperimentRunner:
             unit='experiment',
             iterable=self._collect_experiments(),
         ):
+            console.print(f'Running {experiment.__name__}...')
             result = experiment()
             results.append(result)
 

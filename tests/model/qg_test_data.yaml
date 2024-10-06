@@ -1,0 +1,19 @@
+- item:
+    context: In software development, the terms frontend and backend refer to the distinct roles of the user interface (frontend) and the data management layer (backend) of an application. In a client-server architecture, the client typically represents the frontend, while the server represents the backend, even if some presentation tasks are handled by the server.
+    question: What is the function of the frontend in software development?
+    answer: presentation layer
+
+- item:
+    context: During the day, the sky appears blue.
+    question: What color is the sky during the day?
+    answer: blue
+
+- item:
+    context: GNU Recutils is a set of tools and libraries to access human-editable, plain text databases called recfiles. The data is stored as a sequence of records, each record containing an arbitrary number of named fields.
+    question: What is an advantage of using GNU Recutils?
+    answer: There is free software to manipulate recfiles and a text editor is enough to edit it.
+
+- item:
+    context: To calculate a word embedding vector for the provided sentence, you would typically use a pre-trained word embedding model such as Word2Vec, GloVe, or FastText. These models convert words into numerical vectors based on their semantic meanings and contexts.
+    question: What is used to convert a setence to a word embedding vector?
+    answer: Pre-trained word embedding model, e.g. Word2Vec, GloVE, FastText.
