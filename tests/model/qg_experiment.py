@@ -1,5 +1,7 @@
 """Module with performance experiments of Question Generation module."""
 
+from pathlib import Path
+import yaml  # type: ignore[import-untyped]
 import numpy as np
 from sentence_transformers import SentenceTransformer
 
@@ -15,18 +17,11 @@ def measure_qg_performance_with_cosine_similarity() -> Result:
     """
     model = SentenceTransformer('sentence-transformers/all-distilroberta-v1')
 
-    test_data = [
-        {
-            'question': 'What color is the sky during the day?',
-            'context': 'During the day, the sky appears blue.',
-            'answer': 'blue',
-        },
-        {
-            'question': 'What is the function of the frontend in software development?',
-            'context': 'In software development, the terms frontend and backend refer to the distinct roles of the user interface (frontend) and the data management layer (backend) of an application. In a client-server architecture, the client typically represents the frontend, while the server represents the backend, even if some presentation tasks are handled by the server.',
-            'answer': 'presentation layer',
-        },
-    ]
+    test_data = None
+    with open(
+        Path('tests/model/qg_test_data.yaml'), 'rt', encoding='utf-8'
+    ) as fd:
+        test_data = yaml.safe_load(fd)
 
     qg = QuestionGeneration()
     metric = Metric.COSINE_SIMILARITY
@@ -34,9 +29,10 @@ def measure_qg_performance_with_cosine_similarity() -> Result:
     data_points: np.ndarray = np.zeros(shape=(len(test_data), 1))
 
     for i, test_item in enumerate(test_data):
-        suggested_answer = test_item['answer']
-        context = test_item['context']
-        reference_question = test_item['question']
+        item = test_item['item']
+        suggested_answer = item['answer']
+        context = item['context']
+        reference_question = item['question']
 
         generated_question = qg.generate(
             answer=suggested_answer, context=context
