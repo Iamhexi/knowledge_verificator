@@ -1,0 +1,3 @@
+mode: CLI
+learning_materials: ./learning_assets
+logging_level: DEBUG

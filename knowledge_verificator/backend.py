@@ -1,4 +1,4 @@
-"""Module with backend defining endpoints."""
+"""Module with the backend defining available endpoints."""
 
 from typing import Any, Union
 
