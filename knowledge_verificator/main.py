@@ -84,7 +84,7 @@ if __name__ == '__main__':
         chosen_answer = chooser.choose_answer(paragraph=PARAGRAPH)
         if not chosen_answer:
             raise ValueError(
-                'The supplied paragaph is either too short or too general. '
+                'The supplied paragraph is either too short or too general. '
                 'Please, try providing a longer or more specific paragraph.'
             )
 
