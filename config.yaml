@@ -1,3 +1,5 @@
 mode: CLI
-learning_materials: ./learning_assets
 logging_level: DEBUG
+learning_materials: ./learning_assets
+experiment_implementation: ./tests/model
+experiment_results: ./tests/model/results
