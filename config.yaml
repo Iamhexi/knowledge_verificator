@@ -1,5 +1,6 @@
-mode: CLI
+mode: BACKEND
 logging_level: DEBUG
+production_mode: false
 learning_materials: ./learning_assets
 experiment_implementation: ./tests/model
 experiment_results: ./tests/model/results
