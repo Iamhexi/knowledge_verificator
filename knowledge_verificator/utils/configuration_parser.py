@@ -52,6 +52,7 @@ class Configuration:
     mode: OperatingMode
     experiment_implementation: Path
     experiment_results: Path
+    production_mode: bool
 
     def __init__(
         self,

@@ -1,9 +1,11 @@
 """Main module with CLI definition."""
 
 from pathlib import Path
+import subprocess
 import sys
-from knowledge_verificator.utils.configuration_parser import OperatingMode
+
 from knowledge_verificator.io_handler import config
+from knowledge_verificator.utils.configuration_parser import OperatingMode
 from knowledge_verificator.command_line import run_cli_mode
 from tests.model.runner import ExperimentRunner
 
@@ -19,5 +21,16 @@ if __name__ == '__main__':
             run_cli_mode()
 
         case OperatingMode.BACKEND:
-            pass
-            # TODO: Implement running backend.
+            if config.production_mode:
+                MODE = 'run'
+            else:
+                MODE = 'dev'
+
+            args: list[str] = [
+                'fastapi',
+                MODE,
+                'knowledge_verificator/backend.py',
+            ]
+            process = subprocess.Popen(
+                args=args,
+            )
