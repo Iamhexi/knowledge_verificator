@@ -10,6 +10,31 @@ from knowledge_verificator.qg import QuestionGeneration
 from knowledge_verificator.utils.menu import choose_from_menu
 
 
+def display_feedback(relation: Relation, chosen_answer: str) -> None:
+    """
+    Display feedback to a terminal.
+
+    Args:
+        relation (Relation): Relation between a reference answer and the
+            answer provided by a user. Either they are consistent, not
+            consistent or they are independent claims.
+        chosen_answer (str): An answer provided by a user.
+    """
+    match relation:
+        case Relation.ENTAILMENT:
+            feedback = 'correct'
+            style = 'green'
+        case Relation.CONTRADICTION:
+            feedback = f'wrong. Correct answer is {chosen_answer}'
+            style = 'red'
+        case Relation.NEUTRAL:
+            feedback = 'not directly associated with the posed question'
+            style = 'yellow'
+
+    feedback_text = Text(f'Your answer is {feedback}.', style=style)
+    console.print(feedback_text)
+
+
 def run_cli_mode():
     """
     Run an interactive command-line interface.
@@ -19,6 +44,7 @@ def run_cli_mode():
     """
     qg_module = QuestionGeneration()
     chooser = AnswerChooser()
+    nli_module = NaturalLanguageInference()
 
     while True:
         options = ['knowledge database', 'my own paragraph']
@@ -102,22 +128,8 @@ def run_cli_mode():
             f'\nAnswer the question with full sentence. {question} \nYour answer: '
         )
         user_answer = input().strip()
-
-        nli_module = NaturalLanguageInference()
         relation = nli_module.infer_relation(
             premise=paragraph, hypothesis=user_answer
         )
 
-        match relation:
-            case Relation.ENTAILMENT:
-                feedback = 'correct'
-                style = 'green'
-            case Relation.CONTRADICTION:
-                feedback = f'wrong. Correct answer is {chosen_answer}'
-                style = 'red'
-            case Relation.NEUTRAL:
-                feedback = 'not directly associated with the posed question'
-                style = 'yellow'
-
-        feedback_text = Text(f'Your answer is {feedback}.', style=style)
-        console.print(feedback_text)
+        display_feedback(relation=relation, chosen_answer=chosen_answer)
