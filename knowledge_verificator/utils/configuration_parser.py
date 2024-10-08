@@ -41,12 +41,17 @@ class Configuration:
             `CRITICAL`. Minimal level of a message to be logged.
         mode (OperatingMode): Operating mode of application. Different mode serve
             different purposes.
-
+        experiment_implementation (Path): Path to a directory containing
+            implementation of experiments on language models.
+        experiment_results (Path): Path to a directory, where results
+            should be saved.
     """
 
     learning_materials: Path
     logging_level: str
     mode: OperatingMode
+    experiment_implementation: Path
+    experiment_results: Path
 
     def __init__(
         self,
@@ -59,6 +64,10 @@ class Configuration:
         # Convert to a proper datatypes.
         self.learning_materials: Path = Path(kwargs['learning_materials'])
         self.mode: OperatingMode = OperatingMode(kwargs['mode'])
+        self.experiment_implementation = Path(
+            kwargs['experiment_implementation']
+        )
+        self.experiment_results = Path(kwargs['experiment_results'])
 
 
 class ConfigurationParser:
@@ -100,6 +109,10 @@ class ConfigurationParser:
     def load_configuration(self, configuration_path: Path | str) -> None:
         """
         Load a configuration of from a YAML file.
+
+        This method should be used only if you want to:
+        - either load a new configuration file,
+        - or reload configuration file after it was changed.
 
         Args:
             configuration_path (Path | str): Path to a YAML configuration file.
