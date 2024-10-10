@@ -5,6 +5,7 @@ an instance of `rich` console, and an instance of a preconfigured `Logger`.
 
 from argparse import ArgumentParser
 from logging import Logger
+from pathlib import Path
 from rich.console import Console
 from rich.logging import RichHandler
 
@@ -26,8 +27,9 @@ def get_argument_parser() -> ArgumentParser:
     arg_parser.add_argument(
         '-c',
         '--config',
-        default='config.yaml',
+        default=Path('config.yaml'),
         action='store',
+        type=Path,
         help=(
             'Path to a YAML configuration file that contain configuration '
             'of the system.'
