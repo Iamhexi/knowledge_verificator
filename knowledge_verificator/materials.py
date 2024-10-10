@@ -51,11 +51,13 @@ class MaterialDatabase:
                 material = self.load_material(path)
                 self.materials.append(material)
 
-    def __getitem__(self, id: str) -> Material:
+    def __getitem__(self, material_id: str) -> Material:
         for material in self.materials:
-            if material.id == id:
+            if material.id == material_id:
                 return material
-        raise KeyError(f'No material with id = {id} in the materials database.')
+        raise KeyError(
+            f'No material with id = {material_id} in the materials database.'
+        )
 
     def load_material(self, path: Path) -> Material:
         """
@@ -139,7 +141,12 @@ class MaterialDatabase:
                 f'A file {os.path.basename(material.path)}'
                 f' has to be in {self.materials_dir}'
             )
-        # TODO: Raise an error if a material already exists.
+
+        if self.materials.count(material) > 0:
+            raise ValueError(
+                f'The provided material already exists. Material: {material}.'
+            )
+
         self._create_file_with_material(material=material)
         self.materials.append(material)
 
