@@ -3,6 +3,7 @@
 from dataclasses import dataclass
 import os
 from pathlib import Path
+import uuid
 
 from knowledge_verificator.utils.filesystem import in_directory
 
@@ -17,6 +18,7 @@ class Material:
     title: str
     paragraphs: list[str]
     tags: list[str]
+    id: str = str(uuid.uuid4())
 
 
 class MaterialDatabase:
@@ -49,6 +51,12 @@ class MaterialDatabase:
                 material = self.load_material(path)
                 self.materials.append(material)
 
+    def __getitem__(self, id: str) -> Material:
+        for material in self.materials:
+            if material.id == id:
+                return material
+        raise KeyError(f'No material with id = {id} in the materials database.')
+
     def load_material(self, path: Path) -> Material:
         """
         Load a learning material from a file.
@@ -76,6 +84,32 @@ class MaterialDatabase:
                 tags=tags,
             )
 
+    def delete_material(self, material: Material | str) -> None:
+        """
+        Remove the first material matching the provided material with its `id`.
+
+        As `id` is actually universally unique identifier it should remove one item
+
+
+        Args:
+            material (Material | str): _description_
+
+        Raises:
+            KeyError: _description_
+        """
+        if isinstance(material, str):
+            matching_materials = [
+                _material
+                for _material in self.materials
+                if _material.id == material
+            ]
+            if len(matching_materials) == 0:
+                raise KeyError(f'There are no materials with id = {material}.')
+            material = matching_materials[0]
+
+        index = self.materials.index(material)
+        del self.materials[index]
+
     def add_material(self, material: Material) -> None:
         """
         Add a learning material to a database, also material's its
@@ -89,8 +123,9 @@ class MaterialDatabase:
             ValueError: Raised if title of a learning material is empty.
             FileExistsError: Raised if learning material in a supplied
                 path already exists.
-            ValueError: Raised if a supplied path path is outside the
-                directory for learning materials.
+            ValueError: Raised if a supplied path is outside the
+                directory for learning materials. Prevents path
+                traversal.
         """
         if not material.title:
             raise ValueError('Title of a learning material cannot be empty.')
@@ -104,6 +139,7 @@ class MaterialDatabase:
                 f'A file {os.path.basename(material.path)}'
                 f' has to be in {self.materials_dir}'
             )
+        # TODO: Raise an error if a material already exists.
         self._create_file_with_material(material=material)
         self.materials.append(material)
 

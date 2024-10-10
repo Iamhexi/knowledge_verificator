@@ -43,7 +43,7 @@ def run_cli_mode():
         ValueError:
     """
     qg_module = QuestionGeneration()
-    chooser = AnswerChooser()
+    ac_module = AnswerChooser()
     nli_module = NaturalLanguageInference()
 
     while True:
@@ -79,11 +79,17 @@ def run_cli_mode():
                 if material is None:
                     continue
 
+                available_paragraphs: list[str] = [
+                    _paragraph
+                    for _paragraph in material.paragraphs
+                    if ac_module.choose_answer(_paragraph) is not None
+                ]
+
                 paragraph = str(
-                    choose_from_menu(material.paragraphs, 'paragraphs')
+                    choose_from_menu(available_paragraphs, 'paragraphs')
                 )
 
-                if paragraph is None:
+                if paragraph == 'None':
                     continue
 
                 console.print('Learn this paragraph: ')
@@ -100,7 +106,7 @@ def run_cli_mode():
 
         logger.debug('Loaded the following paragraph:\n %s', paragraph)
 
-        chosen_answer = chooser.choose_answer(paragraph=paragraph)
+        chosen_answer = ac_module.choose_answer(paragraph=paragraph)
         if not chosen_answer:
             logger.error(
                 'The supplied paragraph is either too short or too general. '
