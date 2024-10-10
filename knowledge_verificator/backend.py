@@ -28,7 +28,9 @@ def format_response(data: Any = '', message: str = '') -> dict:
             when something went wrong. Defaults to ''.
 
     Returns:
-        dict:
+        dict: Dict with keys `data` and `message`. Data contains crucial
+            information about a requested operation. Message is used to
+            convey additional information such as a failure description.
     """
     return {
         'data': data,
@@ -52,7 +54,9 @@ def get_materials(
         dict: Requested materials with corresponding IDs.
     """
     if criteria is not None:
-        raise NotImplementedError('Applying criteria is not implemented yet.')
+        message = 'Applying criteria is not implemented yet.'
+        response.status_code = 501
+        return format_response(message=message)
     response.status_code = 200
     return format_response(data=material_db.materials)
 
@@ -64,6 +68,7 @@ def get_material(material_id: str, response: Response):
 
     Args:
         material_id (str): ID of a material to retrieve.
+        response (Response): Instance of response, provided automatically.
 
     Returns:
         dict: Under `data` key, there are `material_id` and `material` keys.
@@ -124,6 +129,12 @@ def delete_material(material_id: str, response: Response) -> dict:
         dict: Under `data` key, there is `material_id` key containing ID
         of the removed material.
     """
-    material_db.delete_material(material=material_id)
+    try:
+        material_db.delete_material(material=material_id)
+    except KeyError as e:
+        message = str(e)
+        response.status_code = 400
+        return format_response(message=message)
+
     response.status_code = 200
     return format_response(data=str(material_id))

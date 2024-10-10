@@ -74,13 +74,13 @@ class Configuration:
 class ConfigurationParser:
     """Class, which loads and parses a YAML configuration."""
 
-    def __init__(self, configuration_file: Path | str) -> None:
+    def __init__(self, configuration_file: Path) -> None:
         """Load a YAML configuration file."""
         self._config_file: Path | None = None
         self._config_data: dict = {}
-        self.load_configuration(configuration_path=configuration_file)
+        self.load_configuration(configuration_file)
 
-    def _load_from_configuration(self) -> None:
+    def _parse_configuration_file(self) -> None:
         if self._config_file is None:
             raise ValueError(
                 'Configuration file was not supplied and has value of None. '
@@ -107,9 +107,9 @@ class ConfigurationParser:
         # Feed key, value pairs to constructor.
         return Configuration(**configuration_arguments)
 
-    def load_configuration(self, configuration_path: Path | str) -> None:
+    def load_configuration(self, configuration_path: Path) -> None:
         """
-        Load a configuration of from a YAML file.
+        Load a configuration from a YAML file.
 
         This method should be used only if you want to:
         - either load a new configuration file,
@@ -121,11 +121,9 @@ class ConfigurationParser:
         Raises:
             FileNotFoundError: Raised if a configuration file was not found.
         """
-        if isinstance(configuration_path, str):
-            configuration_path = Path(configuration_path)
         if not configuration_path.exists():
             raise FileNotFoundError(
                 f'Configuration file {str(configuration_path)} was not found.'
             )
         self._config_file = configuration_path.resolve()
-        self._load_from_configuration()
+        self._parse_configuration_file()

@@ -94,10 +94,10 @@ class MaterialDatabase:
 
 
         Args:
-            material (Material | str): _description_
+            material (Material | str): Learning material object or its id.
 
         Raises:
-            KeyError: _description_
+            KeyError: Raised if matching object was found.
         """
         if isinstance(material, str):
             matching_materials = [
@@ -105,7 +105,7 @@ class MaterialDatabase:
                 for _material in self.materials
                 if _material.id == material
             ]
-            if len(matching_materials) == 0:
+            if not matching_materials:
                 raise KeyError(f'There are no materials with id = {material}.')
             material = matching_materials[0]
 
@@ -142,7 +142,7 @@ class MaterialDatabase:
                 f' has to be in {self.materials_dir}'
             )
 
-        if self.materials.count(material) > 0:
+        if material in self.materials:
             raise ValueError(
                 f'The provided material already exists. Material: {material}.'
             )

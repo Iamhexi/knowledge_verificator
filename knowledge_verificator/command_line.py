@@ -85,11 +85,9 @@ def run_cli_mode():
                     if ac_module.choose_answer(_paragraph) is not None
                 ]
 
-                paragraph = str(
-                    choose_from_menu(available_paragraphs, 'paragraphs')
-                )
+                paragraph = choose_from_menu(available_paragraphs, 'paragraphs')
 
-                if paragraph == 'None':
+                if paragraph is None:
                     continue
 
                 console.print('Learn this paragraph: ')
