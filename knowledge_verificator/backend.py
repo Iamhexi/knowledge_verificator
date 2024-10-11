@@ -102,12 +102,9 @@ def add_material(material: Material, response: Response) -> dict:
     message = ''
     try:
         material_db.add_material(material=material)
-    except ValueError as e:
+    except (ValueError, FileExistsError) as e:
         message = str(e)
         response.status_code = 400
-    except FileExistsError as e:
-        message = str(e)
-        response.status_code = 403
 
     if response.status_code != 200:
         return format_response(message=message)

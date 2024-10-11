@@ -1,6 +1,6 @@
 """Module with AnswerChooser, which finds a best candidate for an answer in a paragraph."""
 
-from functools import cache
+from copy import copy
 import random
 import nltk  # type: ignore[import-untyped]
 from nltk.corpus import wordnet  # type: ignore[import-untyped]
@@ -13,6 +13,7 @@ class AnswerChooser:
     """
 
     def __init__(self) -> None:
+        self._cache: dict[str, str | None] = {}
         dependencies = ('wordnet', 'stopwords', 'punkt')
         for dependency in tqdm(
             dependencies,
@@ -90,48 +91,58 @@ class AnswerChooser:
             case _:
                 return 'n/a'
 
+    def choose_answer(
+        self, paragraph: str, use_cached: bool = True
+    ) -> str | None:
+        """
+        Choose a good candidate for an answer from a paragraph.
 
-@cache
-def choose_answer(ac_module: AnswerChooser, paragraph: str) -> str | None:
-    """
-    Choose a good candidate for an answer from a paragraph.
+        Choose a good candidate from `paragraph` based on the following algorithm:
+        1. Remove stop words.
+        2. If any word with undetermined part of speech (PoS) is present,
+            a random word with undetermined PoS is chosen.
+        3. Otherwise, a random noun is chosen.
+        This operation may be costly so its results are cached. Custom caching
+        mechanism was implemented as `functools` `@cache` and `@lru_cache` should
+        not be called on methods, only on functions.
 
-    Choose a good candidate from `paragraph` based on the following algorithm:
-    1. Remove stop words.
-    2. If any word with undetermined part of speech (PoS) is present,
-        a random word with undetermined PoS is chosen.
-    3. Otherwise, a random noun is chosen.
+        Args:
+            paragraph (str): Source paragraph to choose candidate from.
+            use_cached (bool): Use a cached results if available.
 
-    Args:
-        paragraph (str): Source paragraph to choose candidate from.
+        Returns:
+            str | None: Either chosen word or `None` if there are no good candidates.
+        """
+        if paragraph in self._cache and use_cached:
+            return self._cache[paragraph]
 
-    Returns:
-        str | None: Either chosen word or `None` if there are no good candidates.
-    """
+        entered_paragraph = copy(paragraph)
+        paragraph = self.remove_stopwords(paragraph)
 
-    paragraph = ac_module.remove_stopwords(paragraph)
-
-    words = paragraph.split(' ')
-    words = [ac_module.sanitize(word) for word in words]
-    tagged_words = [
-        (sanitized_word, ac_module.find_part_of_speech(sanitized_word))
-        for sanitized_word in words
-        if sanitized_word
-    ]
-
-    if not words:
-        return None
-
-    unknown_words_present = any(
-        part_of_speech == 'n/a' for _, part_of_speech in tagged_words
-    )
-    if unknown_words_present:
-        return random.choice(words)
-
-    return random.choice(
-        [
-            word
-            for word, part_of_speech in tagged_words
-            if part_of_speech == 'noun'
+        words = paragraph.split(' ')
+        words = [self.sanitize(word) for word in words]
+        tagged_words = [
+            (sanitized_word, self.find_part_of_speech(sanitized_word))
+            for sanitized_word in words
+            if sanitized_word
         ]
-    )
+
+        if not words:
+            return None
+
+        unknown_words_present = any(
+            part_of_speech == 'n/a' for _, part_of_speech in tagged_words
+        )
+        if unknown_words_present:
+            return random.choice(words)
+
+        output = random.choice(
+            [
+                word
+                for word, part_of_speech in tagged_words
+                if part_of_speech == 'noun'
+            ]
+        )
+
+        self._cache[entered_paragraph] = output
+        return output
