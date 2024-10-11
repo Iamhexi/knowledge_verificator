@@ -90,6 +90,7 @@ def run_cli_mode():
                 if paragraph is None:
                     continue
 
+                paragraph = str(paragraph)
                 console.print('Learn this paragraph: ')
                 console.print(paragraph)
                 console.print()
