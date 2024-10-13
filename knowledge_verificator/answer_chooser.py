@@ -13,7 +13,7 @@ class AnswerChooser:
     """
 
     def __init__(self) -> None:
-        self._cache: dict[str, str | None] = {}
+        self._cache: dict[str, list] = {}
         dependencies = ('wordnet', 'stopwords', 'punkt')
         for dependency in tqdm(
             dependencies,
@@ -114,7 +114,9 @@ class AnswerChooser:
             str | None: Either chosen word or `None` if there are no good candidates.
         """
         if paragraph in self._cache and use_cached:
-            return self._cache[paragraph]
+            if len(self._cache[paragraph]) == 0:
+                return None
+            return random.choice(self._cache[paragraph])
 
         entered_paragraph = copy(paragraph)
         paragraph = self.remove_stopwords(paragraph)
@@ -136,13 +138,11 @@ class AnswerChooser:
         if unknown_words_present:
             return random.choice(words)
 
-        output = random.choice(
-            [
-                word
-                for word, part_of_speech in tagged_words
-                if part_of_speech == 'noun'
-            ]
-        )
+        available_outputs = [
+            word
+            for word, part_of_speech in tagged_words
+            if part_of_speech == 'noun'
+        ]
 
-        self._cache[entered_paragraph] = output
-        return output
+        self._cache[entered_paragraph] = available_outputs
+        return random.choice(available_outputs)
