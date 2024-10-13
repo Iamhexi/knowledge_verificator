@@ -80,15 +80,6 @@ class ConfigurationParser:
         self._config_data: dict = {}
         self.load_configuration(configuration_file)
 
-    def _parse_configuration_file(self) -> None:
-        if self._config_file is None:
-            raise ValueError(
-                'Configuration file was not supplied and has value of None. '
-                'Provide a path to the configuration file before parsing it.'
-            )
-        with open(self._config_file, 'rt', encoding='utf-8') as fd:
-            self._config_data = yaml.safe_load(fd)
-
     def parse_configuration(self) -> Configuration:
         """
         Parse the previously loaded YAML configuration file to an instance
@@ -116,14 +107,18 @@ class ConfigurationParser:
         - or reload configuration file after it was changed.
 
         Args:
-            configuration_path (Path | str): Path to a YAML configuration file.
+            configuration_path (Path): Path to a YAML configuration file.
 
         Raises:
-            FileNotFoundError: Raised if a configuration file was not found.
+            ValueError: Raised if a configuration file is inaccessible due
+                to an incorrect path, denied access, not having it set up, or
+                some other reason.
         """
-        if not configuration_path.exists():
-            raise FileNotFoundError(
-                f'Configuration file {str(configuration_path)} was not found.'
-            )
         self._config_file = configuration_path.resolve()
-        self._parse_configuration_file()
+        if self._config_file is None:
+            raise ValueError(
+                'Configuration file was not supplied and has value of None. '
+                'Provide a path to the configuration file before parsing it.'
+            )
+        with open(self._config_file, 'rt', encoding='utf-8') as fd:
+            self._config_data = yaml.safe_load(fd)
