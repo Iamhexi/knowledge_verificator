@@ -1,3 +1,5 @@
 *cache*
 dist
 tests/model/results/
+.coverage
+htmlcov
