@@ -102,6 +102,7 @@ def run_cli_mode():
 
             case _:
                 console.print('Unrecognised option, try again!')
+                continue
 
         logger.debug('Loaded the following paragraph:\n %s', paragraph)
 
