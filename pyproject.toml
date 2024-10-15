@@ -58,6 +58,11 @@ exclude = "tests/model/*"
 [tool.pytest.ini_options]
 addopts = "--cov=knowledge_verificator --cov-report html --cov-branch"
 
+[tool.coverage]
+exclude = [
+    "*/backend.py", # Backend tests exists but are not reported by coverage.
+]
+
 [build-system]
 requires = ["poetry-core"]
 build-backend = "poetry.core.masonry.api"

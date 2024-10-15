@@ -225,6 +225,9 @@ class MaterialDatabase:
                 f'Cannot update non-existent material: {str(material)}.'
             )
 
+        index = self.materials.index(material)
+        old_path = self.materials[index].path
+
         for _, attribute in material.__dataclass_fields__.items():
             field_name = attribute.name
             value = getattr(material, field_name)
@@ -237,5 +240,8 @@ class MaterialDatabase:
 
             setattr(original_material, field_name, value)
 
+        # If path is missing (not provided), use the old path.
+        if not material.path:
+            material.path = old_path
         # Override a file with old material with the updated one.
         self._create_file_with_material(material)

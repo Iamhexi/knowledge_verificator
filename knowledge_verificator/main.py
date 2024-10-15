@@ -6,7 +6,6 @@ import sys
 from knowledge_verificator.io_handler import get_config
 from knowledge_verificator.utils.configuration_parser import OperatingMode
 from knowledge_verificator.command_line import run_cli_mode
-from knowledge_verificator.backend import ENDPOINTS
 from tests.model.runner import ExperimentRunner
 
 if __name__ == '__main__':
@@ -25,7 +24,7 @@ if __name__ == '__main__':
             import uvicorn
 
             uvicorn.run(
-                ENDPOINTS,
+                'knowledge_verificator.backend:ENDPOINTS',
                 host='127.0.0.1',
                 port=8000,
                 reload=(not config.production_mode),

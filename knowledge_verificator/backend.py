@@ -141,7 +141,7 @@ def delete_material(material_id: str, response: Response) -> dict:
     )
 
 
-@ENDPOINTS.delete('/materials')
+@ENDPOINTS.put('/materials')
 def update_material(material: Material, response: Response) -> dict:
     """
     Endpoint to update multiple attributes of a learning material
