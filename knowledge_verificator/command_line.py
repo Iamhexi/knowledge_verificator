@@ -2,7 +2,7 @@
 
 from rich.text import Text
 
-from knowledge_verificator.io_handler import logger, console, config
+from knowledge_verificator.io_handler import logger, console, get_config
 from knowledge_verificator.answer_chooser import AnswerChooser
 from knowledge_verificator.materials import MaterialDatabase
 from knowledge_verificator.nli import NaturalLanguageInference, Relation
@@ -45,6 +45,7 @@ def run_cli_mode():
     qg_module = QuestionGeneration()
     ac_module = AnswerChooser()
     nli_module = NaturalLanguageInference()
+    config = get_config()
 
     while True:
         options = ['knowledge database', 'my own paragraph']

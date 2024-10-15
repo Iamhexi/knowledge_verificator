@@ -63,7 +63,6 @@ class Configuration:
             self.__setattr__(attribute, value)
 
         # Convert to a proper datatypes.
-        self.learning_materials: Path = Path(kwargs['learning_materials'])
         self.mode: OperatingMode = OperatingMode(kwargs['mode'])
         self.experiment_implementation = Path(
             kwargs['experiment_implementation']

@@ -5,10 +5,10 @@ from typing import Any, Union
 from fastapi import FastAPI, Response
 
 from knowledge_verificator.materials import Material, MaterialDatabase
-from knowledge_verificator.io_handler import config
+from knowledge_verificator.io_handler import get_config
 
-endpoints = FastAPI()
-material_db = MaterialDatabase(materials_dir=config.learning_materials)
+ENDPOINTS = FastAPI()
+MATERIAL_DB = MaterialDatabase(materials_dir=get_config().learning_materials)
 
 
 def format_response(data: Any = '', message: str = '') -> dict:
@@ -38,7 +38,7 @@ def format_response(data: Any = '', message: str = '') -> dict:
     }
 
 
-@endpoints.get('/materials')
+@ENDPOINTS.get('/materials')
 def get_materials(
     response: Response, criteria: Union[str, None] = None
 ) -> dict:
@@ -58,10 +58,10 @@ def get_materials(
         response.status_code = 501
         return format_response(message=message)
     response.status_code = 200
-    return format_response(data=material_db.materials)
+    return format_response(data=MATERIAL_DB.materials)
 
 
-@endpoints.get('/materials/{material_id}')
+@ENDPOINTS.get('/materials/{material_id}')
 def get_material(material_id: str, response: Response):
     """
     Get a specific learning material.
@@ -74,7 +74,7 @@ def get_material(material_id: str, response: Response):
         dict: Under `data` key, there are `material_id` and `material` keys.
     """
     try:
-        material = material_db[material_id]
+        material = MATERIAL_DB[material_id]
     except KeyError:
         message = f'Material with id = {material_id} was not found.'
         response.status_code = 404
@@ -85,7 +85,7 @@ def get_material(material_id: str, response: Response):
     return format_response(data=data)
 
 
-@endpoints.post('/materials')
+@ENDPOINTS.post('/materials')
 def add_material(material: Material, response: Response) -> dict:
     """
     Endpoint to add a learning material to the database.
@@ -101,7 +101,7 @@ def add_material(material: Material, response: Response) -> dict:
     response.status_code = 200
     message = ''
     try:
-        material_db.add_material(material=material)
+        MATERIAL_DB.add_material(material=material)
     except (ValueError, FileExistsError) as e:
         message = str(e)
         response.status_code = 400
@@ -115,7 +115,7 @@ def add_material(material: Material, response: Response) -> dict:
     )
 
 
-@endpoints.delete('/materials/{material_id}')
+@ENDPOINTS.delete('/materials/{material_id}')
 def delete_material(material_id: str, response: Response) -> dict:
     """
     Endpoint to delete a learning material from the database.
@@ -129,7 +129,7 @@ def delete_material(material_id: str, response: Response) -> dict:
         of the removed material.
     """
     try:
-        material_db.delete_material(material=material_id)
+        MATERIAL_DB.delete_material(material=material_id)
     except KeyError as e:
         message = str(e)
         response.status_code = 400
@@ -141,7 +141,7 @@ def delete_material(material_id: str, response: Response) -> dict:
     )
 
 
-@endpoints.delete('/materials')
+@ENDPOINTS.delete('/materials')
 def update_material(material: Material, response: Response) -> dict:
     """
     Endpoint to update multiple attributes of a learning material
@@ -156,7 +156,7 @@ def update_material(material: Material, response: Response) -> dict:
         of the removed material.
     """
     try:
-        material_db.update_material(material)
+        MATERIAL_DB.update_material(material)
     except KeyError as e:
         message = str(e)
         response.status_code = 404

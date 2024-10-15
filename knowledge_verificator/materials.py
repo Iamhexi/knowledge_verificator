@@ -85,12 +85,15 @@ class MaterialDatabase:
             content = ''.join(fd.readlines()).rstrip()
             paragraphs = content.split('\n\n')
 
-            return Material(
+            material = Material(
                 path=path.resolve(),
                 title=title,
                 paragraphs=paragraphs,
                 tags=tags,
             )
+
+            self._set_id(material)
+            return material
 
     def delete_material(self, material: Material | str) -> None:
         """
@@ -125,10 +128,16 @@ class MaterialDatabase:
         title = title.replace("'", '')
         return self.materials_dir.joinpath(title)
 
+    def _set_id(self, material: Material) -> None:
+        content = '\n\n'.join(material.paragraphs)
+        material.id = hashlib.sha256(
+            (material.title + content).encode(encoding='utf-8')
+        ).hexdigest()
+
     def add_material(self, material: Material) -> None:
         """
-        Add a learning material to a database, also material's its
-        representation  in a file.
+        Add a learning material to a database, also create material's
+        representation in a file.
 
         Args:
             material (Material): Initialised learning material without
@@ -145,10 +154,7 @@ class MaterialDatabase:
         if not material.title:
             raise ValueError('Title of a learning material cannot be empty.')
 
-        content = '\n\n'.join(material.paragraphs)
-        material.id = hashlib.sha256(
-            (material.title + content).encode(encoding='utf-8')
-        ).hexdigest()
+        self._set_id(material)
 
         if material.path is None:
             material.path = self._title_to_path(material.title)
