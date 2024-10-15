@@ -88,7 +88,7 @@ def get_material(material_id: str, response: Response):
 @endpoints.post('/materials')
 def add_material(material: Material, response: Response) -> dict:
     """
-    Endpoint to add a learning material to a database.
+    Endpoint to add a learning material to the database.
 
     Args:
         material (Material): Learning material to be added.
@@ -110,13 +110,15 @@ def add_material(material: Material, response: Response) -> dict:
         return format_response(message=message)
 
     data = {'material_id': material.id}
-    return format_response(data=data)
+    return format_response(
+        data=data, message=f'Added the material with id = {material.id}.'
+    )
 
 
 @endpoints.delete('/materials/{material_id}')
 def delete_material(material_id: str, response: Response) -> dict:
     """
-    Endpoint to delete a learning material.
+    Endpoint to delete a learning material from the database.
 
     Args:
         material_id (str): ID of the material to be removed.
@@ -134,4 +136,33 @@ def delete_material(material_id: str, response: Response) -> dict:
         return format_response(message=message)
 
     response.status_code = 200
-    return format_response(data=str(material_id))
+    return format_response(
+        message=f'Deleted the material with id = {material_id}.'
+    )
+
+
+@endpoints.delete('/materials')
+def update_material(material: Material, response: Response) -> dict:
+    """
+    Endpoint to update multiple attributes of a learning material
+    in the database.
+
+    Args:
+        material_id (str): ID of the material to be removed.
+        response (Response): Response to a request. Automatically passed.
+
+    Returns:
+        dict: Under `data` key, there is `material_id` key containing ID
+        of the removed material.
+    """
+    try:
+        material_db.update_material(material)
+    except KeyError as e:
+        message = str(e)
+        response.status_code = 404
+        return format_response(message=message)
+
+    response.status_code = 200
+    return format_response(
+        message=f'Updated the material with id = {material.id}.'
+    )
