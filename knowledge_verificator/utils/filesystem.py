@@ -15,9 +15,9 @@ def in_directory(file: Path, directory: Path) -> bool:
     Returns:
         bool: Present in a directory or subdirectories (True) or not (False).
     """
-    return str(directory.resolve()) in str(
-        file.resolve()
-    ) and not file.samefile(directory)
+    directory_path = str(directory.resolve())
+    file_path = str(file.resolve())
+    return directory_path in file_path and directory_path != file_path
 
 
 def create_text_file(path: Path | str, content: str = '') -> None:

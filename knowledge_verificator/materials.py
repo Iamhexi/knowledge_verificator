@@ -1,9 +1,9 @@
 """Module with tools for managing learning material."""
 
-from dataclasses import dataclass
+from dataclasses import dataclass, field
+import hashlib
 import os
 from pathlib import Path
-import uuid
 
 from knowledge_verificator.utils.filesystem import in_directory
 
@@ -14,11 +14,17 @@ class Material:
     Data class representing a learning material loaded from a database.
     """
 
-    path: Path
     title: str
     paragraphs: list[str]
-    tags: list[str]
-    id: str = str(uuid.uuid4())
+    tags: list[str] = field(default_factory=list)
+    path: Path | None = None
+    id: str = ''
+
+    def __eq__(self, value: object) -> bool:
+        if not isinstance(value, (Material)):
+            return False
+
+        return value.id == self.id
 
 
 class MaterialDatabase:
@@ -90,7 +96,8 @@ class MaterialDatabase:
         """
         Remove the first material matching the provided material with its `id`.
 
-        As `id` is actually universally unique identifier it should remove one item
+        As `id` is actually universally unique identifier,
+        it should remove one item.
 
 
         Args:
@@ -112,6 +119,12 @@ class MaterialDatabase:
         index = self.materials.index(material)
         del self.materials[index]
 
+    def _title_to_path(self, title: str) -> Path:
+        title = title.replace(' ', '_')
+        title = title.replace('"', '')
+        title = title.replace("'", '')
+        return self.materials_dir.joinpath(title)
+
     def add_material(self, material: Material) -> None:
         """
         Add a learning material to a database, also material's its
@@ -131,11 +144,21 @@ class MaterialDatabase:
         """
         if not material.title:
             raise ValueError('Title of a learning material cannot be empty.')
+
+        content = '\n\n'.join(material.paragraphs)
+        material.id = hashlib.sha256(
+            (material.title + content).encode(encoding='utf-8')
+        ).hexdigest()
+
+        if material.path is None:
+            material.path = self._title_to_path(material.title)
+
         if material.path.exists():
             raise FileExistsError(
                 'A file in the provided path already exists. '
                 'Choose a different filename.'
             )
+
         if not in_directory(file=material.path, directory=self.materials_dir):
             raise ValueError(
                 f'A file {os.path.basename(material.path)}'
@@ -167,6 +190,46 @@ class MaterialDatabase:
         return output
 
     def _create_file_with_material(self, material: Material) -> None:
+        if material.path is None:
+            raise ValueError(
+                f'Cannot create a material without a valid path. Current path: `{material.path}`.'
+            )
         with open(material.path, 'wt', encoding='utf-8') as fd:
             file_content = self._format_file_content(material=material)
             fd.write(file_content)
+
+    def update_material(
+        self, material: Material, ignore_empty: bool = True
+    ) -> None:
+        """
+        Update an existing learning material.
+
+
+        Args:
+            material (Material): Instance of learning material from the database.
+            ignore_empty (bool, optional): Do not update attribute with the
+                value equal to `None`. Defaults to True.
+
+        Raises:
+            KeyError: Raised if the learning material is not
+                present in the database.
+        """
+        if material not in self.materials:
+            raise KeyError(
+                f'Cannot update non-existent material: {str(material)}.'
+            )
+
+        for _, attribute in material.__dataclass_fields__.items():
+            field_name = attribute.name
+            value = getattr(material, field_name)
+
+            if value is None and ignore_empty:
+                continue
+
+            index = self.materials.index(material)
+            original_material = self.materials[index]
+
+            setattr(original_material, field_name, value)
+
+        # Override a file with old material with the updated one.
+        self._create_file_with_material(material)
