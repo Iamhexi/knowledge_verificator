@@ -3,13 +3,14 @@
 from pathlib import Path
 import sys
 
-from knowledge_verificator.io_handler import config
+from knowledge_verificator.io_handler import get_config
 from knowledge_verificator.utils.configuration_parser import OperatingMode
 from knowledge_verificator.command_line import run_cli_mode
-from knowledge_verificator.backend import endpoints
+from knowledge_verificator.backend import ENDPOINTS
 from tests.model.runner import ExperimentRunner
 
 if __name__ == '__main__':
+    config = get_config()
     match config.mode:
         case OperatingMode.EXPERIMENT:
             experiment_directory = Path(config.experiment_implementation)
@@ -24,7 +25,7 @@ if __name__ == '__main__':
             import uvicorn
 
             uvicorn.run(
-                endpoints,
+                ENDPOINTS,
                 host='127.0.0.1',
                 port=8000,
                 reload=(not config.production_mode),
