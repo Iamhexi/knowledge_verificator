@@ -61,6 +61,16 @@ def server(mock_args, database_directory):
     process.kill()
 
 
+@pytest.fixture
+def material() -> dict[str, str | list]:
+    """Fixture to provide required fields to create a learning material."""
+    return {
+        'title': '123',
+        'paragraphs': ['123'],
+        'tags': ['123'],
+    }
+
+
 def send_request(
     endpoint: str,
     timeout: int = 15,
@@ -102,7 +112,7 @@ def send_request(
     return (content, response.status_code)
 
 
-def test_getting_empty_database():
+def test_getting_empty_database(material):
     """Test if the empty database returns no materials when requested."""
     response, _ = send_request(
         endpoint='materials',
@@ -112,35 +122,25 @@ def test_getting_empty_database():
     assert response['message'] == ''
 
 
-def test_adding_material():
+def test_adding_material(material):
     """Test if a material"""
-    data = {
-        'title': '123',
-        'paragraphs': ['123'],
-        'tags': ['123'],
-    }
 
     response, _ = send_request(
         endpoint='materials',
         method='post',
-        request_body=data,
+        request_body=material,
     )
 
     assert response['data']['material_id'], 'Material id is empty.'
 
 
-def test_adding_and_removing_material():
+def test_adding_and_removing_material(material):
     """Test if a material may be added then removed."""
-    data = {
-        'title': '123',
-        'paragraphs': ['123'],
-        'tags': ['123'],
-    }
 
     response, _ = send_request(
         endpoint='materials',
         method='post',
-        request_body=data,
+        request_body=material,
     )
 
     assert response['data']['material_id'], 'Material id is empty.'
@@ -154,19 +154,13 @@ def test_adding_and_removing_material():
     assert response['message']
 
 
-def test_updating_material():
+def test_updating_material(material):
     "Test if updating an existing material succeeds."
-
-    data = {
-        'title': '1123',
-        'paragraphs': ['123'],
-        'tags': ['123'],
-    }
 
     response, status_code = send_request(
         endpoint='materials',
         method='post',
-        request_body=data,
+        request_body=material,
     )
 
     assert status_code == 200, 'Adding a new material to the database failed.'
@@ -177,33 +171,34 @@ def test_updating_material():
     ], 'Material id is missing in the response to adding a new material to the database.'
 
     material_id = response['data']['material_id']
-    data = {
+    new_material = {
         'id': material_id,
         'title': 'Totally different title!',
         'paragraphs': [],
     }
 
-    _, status_code = send_request(
+    response, status_code = send_request(
         endpoint='materials',
         method='PUT',
-        request_body=data,
+        request_body=new_material,
     )
 
     assert status_code == 200, 'Updating an existing material failed.'
+    assert (
+        'Updated the material with id' in response['message']
+    ), 'Failed to update the material.'
+    assert (
+        new_material['title'] == response['data']['title']
+    ), 'Title of the material has not been updated.'
 
 
-def test_updating_non_existent_material_fails():
+def test_updating_non_existent_material_fails(material):
     """Test if updating non-existent material fails."""
-    data = {
-        'title': '1123',
-        'paragraphs': ['123'],
-        'tags': ['123'],
-    }
 
     _, status_code = send_request(
         endpoint='materials',
         method='post',
-        request_body=data,
+        request_body=material,
     )
 
     assert status_code == 200, 'Adding a new material to the database failed.'
