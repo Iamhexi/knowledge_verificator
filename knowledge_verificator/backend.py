@@ -164,5 +164,6 @@ def update_material(material: Material, response: Response) -> dict:
 
     response.status_code = 200
     return format_response(
-        message=f'Updated the material with id = {material.id}.'
+        message=f'Updated the material with id = {material.id}.',
+        data=MATERIAL_DB[material.id],
     )
