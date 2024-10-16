@@ -3,17 +3,17 @@
 import pytest
 
 from transformers import set_seed  # type: ignore[import-untyped]
-from knowledge_verificator.qg import QuestionGeneration
+from knowledge_verificator.qg.t5 import T5FineTuned
 
 
 @pytest.fixture
 def qg():
     """
     Provide non-deterministically initialized instance of
-    the `QuestionGeneration` class.
+    the Question Generation model.
     """
     set_seed(0)
-    question_generation = QuestionGeneration()
+    question_generation = T5FineTuned()
     return question_generation
 
 

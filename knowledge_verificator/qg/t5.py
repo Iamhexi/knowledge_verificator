@@ -1,28 +1,29 @@
-"""Module with question generation model."""
+"""Module with implementation of T5 Fine-Tuned Question Generation model."""
 
+from knowledge_verificator.qg.base import QuestionGeneration  # type: ignore[import-untyped]
 import warnings
 import torch
-from transformers import T5Tokenizer, T5ForConditionalGeneration  # type: ignore[import-untyped]
+from transformers import T5Tokenizer, T5ForConditionalGeneration
 
 
-class QuestionGeneration:  # pylint: disable=too-few-public-methods
+class T5FineTuned(QuestionGeneration):  # pylint: disable=too-few-public-methods
     """Class for generating question based on supplied context."""
 
     def __init__(self) -> None:
         warnings.filterwarnings('ignore', category=FutureWarning)
-        self.trained_model_path = (
+        self._trained_model_path = (
             'ZhangCheng/T5-Base-Fine-Tuned-for-Question-Generation'
         )
-        self.trained_tokenizer_path = (
+        self._trained_tokenizer_path = (
             'ZhangCheng/T5-Base-Fine-Tuned-for-Question-Generation'
         )
 
         self.model = T5ForConditionalGeneration.from_pretrained(
-            self.trained_model_path,
+            self._trained_model_path,
         )
 
         self.tokenizer = T5Tokenizer.from_pretrained(
-            self.trained_tokenizer_path,
+            self._trained_tokenizer_path,
             clean_up_tokenization_spaces=True,
             legacy=True,
         )
@@ -63,3 +64,12 @@ class QuestionGeneration:  # pylint: disable=too-few-public-methods
             clean_up_tokenization_spaces=True,
         )
         return {'question': question, 'answer': answer, 'context': context}
+
+    def get_model(self) -> str:
+        """
+        Get a nicely-formatted name of the used question generation model.
+
+        Returns:
+            str: Name of the model.
+        """
+        return 'T5 (fine-tuned)'

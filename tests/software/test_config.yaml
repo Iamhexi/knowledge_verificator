@@ -4,3 +4,7 @@ production_mode: true
 learning_materials: ./test_database
 experiment_implementation: ./tests/model
 experiment_results: ./tests/model/results
+port: 8000
+server: 127.0.0.1
+question_generation_model: T5 (fine-tuned)
+natural_language_inference_model: roberta

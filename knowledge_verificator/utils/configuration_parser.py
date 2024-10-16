@@ -53,6 +53,10 @@ class Configuration:
     experiment_implementation: Path
     experiment_results: Path
     production_mode: bool
+    server: str
+    port: int
+    question_generation_model: str
+    natural_language_inference_model: str
 
     def __init__(
         self,
