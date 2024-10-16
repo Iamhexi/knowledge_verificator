@@ -6,7 +6,7 @@ from knowledge_verificator.io_handler import logger, console, get_config
 from knowledge_verificator.answer_chooser import AnswerChooser
 from knowledge_verificator.materials import MaterialDatabase
 from knowledge_verificator.nli import NaturalLanguageInference, Relation
-from knowledge_verificator.qg import QuestionGeneration
+from knowledge_verificator.qg.qg_model_factory import create_model
 from knowledge_verificator.utils.menu import choose_from_menu
 
 
@@ -42,10 +42,10 @@ def run_cli_mode():
     Raises:
         ValueError:
     """
-    qg_module = QuestionGeneration()
+    config = get_config()
+    qg_module = create_model(config.question_generation_model)
     ac_module = AnswerChooser()
     nli_module = NaturalLanguageInference()
-    config = get_config()
 
     while True:
         options = ['knowledge database', 'my own paragraph']

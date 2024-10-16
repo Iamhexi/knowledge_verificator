@@ -6,9 +6,11 @@ from fastapi import FastAPI, Response
 
 from knowledge_verificator.materials import Material, MaterialDatabase
 from knowledge_verificator.io_handler import get_config
+from knowledge_verificator.qg.qg_model_factory import create_model
 
 ENDPOINTS = FastAPI()
 MATERIAL_DB = MaterialDatabase(materials_dir=get_config().learning_materials)
+QG_MODEL = create_model(get_config().question_generation_model)
 
 
 def format_response(data: Any = '', message: str = '') -> dict:
@@ -167,3 +169,16 @@ def update_material(material: Material, response: Response) -> dict:
         message=f'Updated the material with id = {material.id}.',
         data=MATERIAL_DB[material.id],
     )
+
+
+@ENDPOINTS.get('/models/qg')
+def get_qg_model() -> dict:
+    """
+    Endpoint to provide name of currently chosen Question Generation model.
+
+    Returns:
+        dict: Under `data` key, there is `model_name` key containing the name
+        of the current Question Generation model.
+    """
+    data = {'model_name': QG_MODEL.get_model()}
+    return format_response(data=data)

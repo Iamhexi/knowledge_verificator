@@ -5,7 +5,7 @@ import yaml  # type: ignore[import-untyped]
 import numpy as np
 from sentence_transformers import SentenceTransformer
 
-from knowledge_verificator.qg import QuestionGeneration
+from knowledge_verificator.qg.t5 import T5FineTuned
 from tests.model.runner import Metric, Result
 
 
@@ -23,9 +23,9 @@ def measure_qg_performance_with_cosine_similarity() -> Result:
     ) as fd:
         test_data = yaml.safe_load(fd)
 
-    qg = QuestionGeneration()
+    qg = T5FineTuned()
     metric = Metric.COSINE_SIMILARITY
-    model_name = qg.trained_model_path.split('/')[1]
+    model_name = qg._trained_model_path.split('/')[1]
     data_points: np.ndarray = np.zeros(shape=(len(test_data), 1))
 
     for i, test_item in enumerate(test_data):
