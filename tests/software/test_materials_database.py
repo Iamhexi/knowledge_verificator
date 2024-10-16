@@ -13,6 +13,9 @@ import requests  # type: ignore[import-untyped]
 import uvicorn
 import uvicorn.server
 
+SERVER = '127.0.0.1'
+PORT = 8000
+
 
 @pytest.fixture
 def database_directory():
@@ -27,18 +30,6 @@ def database_directory():
     shutil.rmtree(directory)
 
 
-@pytest.fixture()
-def server_ip() -> str:
-    """Fixture to provide IP of the server."""
-    return '127.0.0.1'
-
-
-@pytest.fixture()
-def server_port() -> int:
-    """Fixture to provide port of the server."""
-    return 8000
-
-
 @pytest.fixture
 def mock_args(monkeypatch):
     """
@@ -51,13 +42,13 @@ def mock_args(monkeypatch):
     )
 
 
-@pytest.fixture
-def server(mock_args, database_directory, server_ip, server_port):
+@pytest.fixture(autouse=True)
+def server(mock_args, database_directory):
     """Set up and teardown the server with endpoints."""
     process = multiprocessing.Process(
         target=uvicorn.run,
         args=('knowledge_verificator.backend:ENDPOINTS',),
-        kwargs={'host': server_ip, 'port': server_port, 'reload': False},
+        kwargs={'host': SERVER, 'port': PORT, 'reload': False},
     )
     process.start()
     # Wait for a server to start up.
@@ -72,8 +63,6 @@ def server(mock_args, database_directory, server_ip, server_port):
 
 def send_request(
     endpoint: str,
-    server: str,
-    port: int,
     timeout: int = 15,
     method: str = 'get',
     request_body: Any = None,
@@ -84,8 +73,6 @@ def send_request(
 
     Args:
         endpoint (str): Name of the API endpoint.
-        server (str): IP or domain of the server.
-        port (int): Port of the server.
         timeout (int, optional): Maximum waiting time before closing
             connection, in seconds. Defaults to 10.
         method (str, optional): HTTP method, one of "get", "post", "put",
@@ -99,7 +86,7 @@ def send_request(
         tuple[dict, int]: Tuple with the decoded content of the response and
             the HTTP status code.
     """
-    url = f'http://{server}:{port}/{endpoint}'
+    url = f'http://{SERVER}:{PORT}/{endpoint}'
     response = requests.request(
         method=method,
         url=url,
@@ -115,19 +102,17 @@ def send_request(
     return (content, response.status_code)
 
 
-def test_getting_empty_database(server, server_ip, server_port):
+def test_getting_empty_database():
     """Test if the empty database returns no materials when requested."""
     response, _ = send_request(
         endpoint='materials',
-        server=server_ip,
-        port=server_port,
         method='get',
     )
     assert response['data'] == []
     assert response['message'] == ''
 
 
-def test_adding_material(server, server_ip, server_port):
+def test_adding_material():
     """Test if a material"""
     data = {
         'title': '123',
@@ -137,8 +122,6 @@ def test_adding_material(server, server_ip, server_port):
 
     response, _ = send_request(
         endpoint='materials',
-        server=server_ip,
-        port=server_port,
         method='post',
         request_body=data,
     )
@@ -146,7 +129,7 @@ def test_adding_material(server, server_ip, server_port):
     assert response['data']['material_id'], 'Material id is empty.'
 
 
-def test_adding_and_removing_material(server, server_ip, server_port):
+def test_adding_and_removing_material():
     """Test if a material may be added then removed."""
     data = {
         'title': '123',
@@ -156,8 +139,6 @@ def test_adding_and_removing_material(server, server_ip, server_port):
 
     response, _ = send_request(
         endpoint='materials',
-        server=server_ip,
-        port=server_port,
         method='post',
         request_body=data,
     )
@@ -167,15 +148,13 @@ def test_adding_and_removing_material(server, server_ip, server_port):
     material_id = response['data']['material_id']
     response, _ = send_request(
         endpoint=f'materials/{material_id}',
-        server=server_ip,
-        port=server_port,
         method='delete',
     )
 
     assert response['message']
 
 
-def test_updating_material(server, server_ip, server_port):
+def test_updating_material():
     "Test if updating an existing material succeeds."
 
     data = {
@@ -186,8 +165,6 @@ def test_updating_material(server, server_ip, server_port):
 
     response, status_code = send_request(
         endpoint='materials',
-        server=server_ip,
-        port=server_port,
         method='post',
         request_body=data,
     )
@@ -208,8 +185,6 @@ def test_updating_material(server, server_ip, server_port):
 
     _, status_code = send_request(
         endpoint='materials',
-        server=server_ip,
-        port=server_port,
         method='PUT',
         request_body=data,
     )
@@ -217,7 +192,7 @@ def test_updating_material(server, server_ip, server_port):
     assert status_code == 200, 'Updating an existing material failed.'
 
 
-def test_updating_non_existent_material_fails(server, server_ip, server_port):
+def test_updating_non_existent_material_fails():
     """Test if updating non-existent material fails."""
     data = {
         'title': '1123',
@@ -227,8 +202,6 @@ def test_updating_non_existent_material_fails(server, server_ip, server_port):
 
     _, status_code = send_request(
         endpoint='materials',
-        server=server_ip,
-        port=server_port,
         method='post',
         request_body=data,
     )
@@ -237,8 +210,6 @@ def test_updating_non_existent_material_fails(server, server_ip, server_port):
 
     _, status_code = send_request(
         endpoint='materials/rand0m_byt3s',
-        server=server_ip,
-        port=server_port,
         method='delete',
         expect_failure=True,
     )
