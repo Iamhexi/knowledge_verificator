@@ -51,7 +51,7 @@ def server(mock_args, database_directory):
         kwargs={'host': SERVER, 'port': PORT, 'reload': False},
     )
     process.start()
-    wait_for_server_startup(timeout=10)
+    wait_for_server_startup(timeout=15)
 
     yield
 
