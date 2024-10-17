@@ -1,12 +1,12 @@
 """Module with implementation of T5 Fine-Tuned Question Generation model."""
 
-from knowledge_verificator.qg.base import QuestionGeneration  # type: ignore[import-untyped]
 import warnings
 import torch
-from transformers import T5Tokenizer, T5ForConditionalGeneration
+from transformers import T5Tokenizer, T5ForConditionalGeneration  # type: ignore[import-untyped]
+from knowledge_verificator.qg.base import QuestionGeneration
 
 
-class T5FineTuned(QuestionGeneration):  # pylint: disable=too-few-public-methods
+class T5FineTuned(QuestionGeneration):
     """Class for generating question based on supplied context."""
 
     def __init__(self) -> None:
@@ -72,4 +72,4 @@ class T5FineTuned(QuestionGeneration):  # pylint: disable=too-few-public-methods
         Returns:
             str: Name of the model.
         """
-        return 'T5 (fine-tuned)'
+        return 'T5'

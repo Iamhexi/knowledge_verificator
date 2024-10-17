@@ -17,26 +17,49 @@ class Relation(Enum):
     CONTRADICTION = 'contradiction'
 
 
+class NaturalLanguageInferenceModel(Enum):
+    """Enumeration of the available Natural Language Inference models."""
+
+    ROBERTA = 'ynie/roberta-large-snli_mnli_fever_anli_R1_R2_R3-nli'
+    ALBERT = 'ynie/albert-xxlarge-v2-snli_mnli_fever_anli_R1_R2_R3-nli'
+    BART = 'ynie/bart-large-snli_mnli_fever_anli_R1_R2_R3-nli'
+    ELECTRA = (
+        'ynie/electra-large-discriminator-snli_mnli_fever_anli_R1_R2_R3-nli'
+    )
+    XLNET = 'ynie/xlnet-large-cased-snli_mnli_fever_anli_R1_R2_R3-nli'
+
+
 class NaturalLanguageInference:
     """Implementation of Natural Language Inference module."""
 
-    def __init__(self) -> None:
+    def __init__(self, model: NaturalLanguageInferenceModel) -> None:
         logging.getLogger('transformers.modeling_utils').setLevel(logging.ERROR)
         self.max_new_tokens = 256
-        self._available_models = {
-            'roberta': 'ynie/roberta-large-snli_mnli_fever_anli_R1_R2_R3-nli',
-            'albert': 'ynie/albert-xxlarge-v2-snli_mnli_fever_anli_R1_R2_R3-nli',
-            'bart': 'ynie/bart-large-snli_mnli_fever_anli_R1_R2_R3-nli',
-            'electra': 'ynie/electra-large-discriminator-snli_mnli_fever_anli_R1_R2_R3-nli',
-            'xlnet': 'ynie/xlnet-large-cased-snli_mnli_fever_anli_R1_R2_R3-nli',
-        }
-        self._hg_model_hub_name = self._available_models['roberta']
+        self.set_model(model)
+
+    def set_model(self, model: NaturalLanguageInferenceModel) -> None:
+        """
+        Switch the language model and tokenizer based on the supplied option.
+
+        Args:
+            model (NaturalLanguageInferenceModel): Desired model.
+        """
+        self._model_type = model
         self.tokenizer = AutoTokenizer.from_pretrained(
-            self._hg_model_hub_name, clean_up_tokenization_spaces=True
+            self._model_type.value, clean_up_tokenization_spaces=True
         )
         self.model = AutoModelForSequenceClassification.from_pretrained(
-            self._hg_model_hub_name
+            self._model_type.value
         )
+
+    def get_model(self) -> str:
+        """
+        Get a pretty-formatted name of the currently loaded model.
+
+        Returns:
+            str: Name of the model.
+        """
+        return self._model_type.name
 
     def infer(
         self,
@@ -53,7 +76,7 @@ class NaturalLanguageInference:
         premise : str
             Premise, which is the ground truth.
         hypothesis : str
-            Hypothesis, which is evalutated with `premise`.
+            Hypothesis, which is evaluated with `premise`.
         precision : int
             Number of decimal places, to which calculations should be rounded, by default 3.
 
@@ -80,7 +103,7 @@ class NaturalLanguageInference:
 
         token_type_ids = None
         # `bart` model does not have `token_type_ids`.
-        if self._hg_model_hub_name != self._available_models['bart']:
+        if self._model_type != NaturalLanguageInferenceModel.BART:
             token_type_ids = (
                 torch.Tensor(tokenized_input_seq_pair['token_type_ids'])
                 .long()
@@ -135,3 +158,13 @@ class NaturalLanguageInference:
                 max_probability = probability
                 most_probable = relation
         return most_probable
+
+
+def get_available_nli_models() -> list[str]:
+    """
+    Get names of all the available Natural Language Inference models.
+
+    Returns:
+        list[str]: List of models' names.
+    """
+    return [model.name for model in NaturalLanguageInferenceModel]

@@ -25,7 +25,7 @@ def measure_qg_performance_with_cosine_similarity() -> Result:
 
     qg = T5FineTuned()
     metric = Metric.COSINE_SIMILARITY
-    model_name = qg._trained_model_path.split('/')[1]
+    model_name = qg.get_model()
     data_points: np.ndarray = np.zeros(shape=(len(test_data), 1))
 
     for i, test_item in enumerate(test_data):

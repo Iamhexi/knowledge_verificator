@@ -112,7 +112,7 @@ def send_request(
     return (content, response.status_code)
 
 
-def test_getting_empty_database(material):
+def test_getting_empty_database():
     """Test if the empty database returns no materials when requested."""
     response, _ = send_request(
         endpoint='materials',
