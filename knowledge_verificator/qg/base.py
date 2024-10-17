@@ -3,7 +3,7 @@
 from abc import ABC, abstractmethod
 
 
-class QuestionGeneration(ABC):  # pylint: disable=too-few-public-methods
+class QuestionGeneration(ABC):
     """Class for generating question based on supplied context."""
 
     @abstractmethod

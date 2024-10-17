@@ -1,28 +1,34 @@
 """Module with factory of Question Generation (QG) models."""
 
+from enum import Enum
 from knowledge_verificator.qg.base import QuestionGeneration
 from knowledge_verificator.qg.t5 import T5FineTuned
 
 
-def create_model(model_name: str) -> QuestionGeneration:
+class QuestionGenerationModel(Enum):
+    """Enumeration with the available Question Generation models."""
+
+    T5 = T5FineTuned
+
+
+def create_model(model: QuestionGenerationModel) -> QuestionGeneration:
     """
-    Instantiate a Question Generation model by the provided name.
+    Instantiate a Question Generation module with the desired model.
 
     Args:
-        model_name (str): Name of the model.
-
-    Raises:
-        ValueError: Raised if the provided name does not match to any model.
+        model (QuestionGenerationModel): Chosen QG model.
 
     Returns:
         QuestionGeneration: Instance of Question Generation model.
     """
+    return model.value()
 
-    match model_name:
-        case 'T5 (fine-tuned)':
-            return T5FineTuned()
 
-        case _:
-            raise ValueError(
-                f'Unknown Question Generation model name: {model_name}.'
-            )
+def get_available_qg_models() -> list[str]:
+    """
+    Get a list of available Question Generation models.
+
+    Returns:
+        list[str]: _description_
+    """
+    return [model.name for model in QuestionGenerationModel]
