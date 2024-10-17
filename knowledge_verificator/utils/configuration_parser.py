@@ -9,7 +9,9 @@ from typing import Any
 import yaml  # type: ignore[import-untyped]
 
 from knowledge_verificator.nli import NaturalLanguageInferenceModel
-from knowledge_verificator.qg.qg_model_factory import QuestionGenerationModel  # type: ignore[import-untyped]
+from knowledge_verificator.qg.qg_model_factory import (
+    QuestionGenerationModel,  # type: ignore[import-untyped]
+)
 
 
 class OperatingMode(Enum):
@@ -71,6 +73,7 @@ class Configuration:
         for attribute, value in kwargs.items():
             self.__setattr__(attribute, value)
 
+        logger = logging.Logger('Configuration parser', level=logging.DEBUG)
         # Convert to a proper datatypes.
         try:
             self.natural_language_inference_model = (
@@ -79,9 +82,8 @@ class Configuration:
                 ]
             )
 
-        # FIXME: Use custom logger (but do not import from io_handler as it causes circular import error.)
         except KeyError as e:
-            logging.critical(
+            logger.critical(
                 'Unknown configuration option for `natural_language_inference`: %s.',
                 e,
             )
@@ -92,7 +94,7 @@ class Configuration:
                 kwargs['question_generation_model'].upper()
             ]
         except KeyError as e:
-            logging.critical(
+            logger.critical(
                 'Unknown configuration option for `question_generation_model`: %s.',
                 e,
             )
