@@ -51,14 +51,36 @@ def server(mock_args, database_directory):
         kwargs={'host': SERVER, 'port': PORT, 'reload': False},
     )
     process.start()
-    # Wait for a server to start up.
-    time.sleep(2)
+    wait_for_server_startup(timeout=10)
 
     yield
 
     process.terminate()
-    time.sleep(2)
-    process.kill()
+    process.join(10)
+
+
+def wait_for_server_startup(timeout: int = 10) -> None:
+    """
+    Wait until the server is ready.
+
+    Args:
+        timeout (int, optional): Number of seconds before the server startup will
+            be considered failed and forcefully stopped. Defaults to 10.
+
+    Raises:
+        RuntimeError: Raised if the server did not start before the timeout.
+    """
+    url = f'http://{SERVER}:{PORT}/materials'
+    start_time = time.time()
+    while time.time() - start_time < timeout:
+        try:
+            response = requests.get(url, timeout=time.time() - start_time)
+            if response.status_code == 200:
+                return None
+        except requests.ConnectionError:
+            pass
+        time.sleep(1)
+    raise RuntimeError('Server did not start in time.')
 
 
 @pytest.fixture
