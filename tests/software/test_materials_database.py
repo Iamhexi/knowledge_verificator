@@ -57,6 +57,7 @@ def server(mock_args, database_directory):
 
     process.terminate()
     process.join(10)
+    process.kill()
 
 
 def wait_for_server_startup(timeout: int = 10) -> None:
