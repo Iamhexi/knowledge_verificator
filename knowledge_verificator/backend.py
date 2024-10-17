@@ -235,7 +235,7 @@ def set_qg_model(model_name: str, response: Response) -> dict:
     """
     try:
         model = QuestionGenerationModel[model_name]
-        global QG_MODEL
+        global QG_MODEL  # type: ignore[global-statement]
         QG_MODEL = create_model(model)
         return format_response(data={'model_name': QG_MODEL.get_model()})
     except KeyError:
@@ -262,7 +262,6 @@ def set_nli_model(model_name: str, response: Response) -> dict:
     """
     try:
         model = NaturalLanguageInferenceModel[model_name]
-        global NLI_MODEL
         NLI_MODEL.set_model(model)
         return format_response(data={'model_name': NLI_MODEL.get_model()})
     except KeyError:

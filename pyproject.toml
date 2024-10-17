@@ -30,8 +30,10 @@ mypy = "^1.11.2"
 ruff = "^0.6.5"
 
 [tool.ruff]
+include = ["*.py"]
 line-length = 80
 indent-width = 4
+
 
 target-version = "py312"
 
@@ -51,6 +53,8 @@ unfixable = ["B"]
 
 [tool.ruff.format]
 quote-style = "single"
+indent-style = "space"
+docstring-code-format = true
 
 [tool.mypy]
 # Exclude module causing Internal error in mypy.
