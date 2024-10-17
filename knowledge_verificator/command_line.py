@@ -45,7 +45,9 @@ def run_cli_mode():
     config = get_config()
     qg_module = create_model(config.question_generation_model)
     ac_module = AnswerChooser()
-    nli_module = NaturalLanguageInference()
+    nli_module = NaturalLanguageInference(
+        model=config.natural_language_inference_model
+    )
 
     while True:
         options = ['knowledge database', 'my own paragraph']
