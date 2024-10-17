@@ -2,13 +2,19 @@
 
 import pytest
 
-from knowledge_verificator.nli import Relation, NaturalLanguageInference
+from knowledge_verificator.nli import (
+    NaturalLanguageInferenceModel,
+    Relation,
+    NaturalLanguageInference,
+)
 
 
 @pytest.fixture
 def nli() -> NaturalLanguageInference:
-    """Provide NaturalLanuageInference class for tests."""
-    model = NaturalLanguageInference()
+    """Provide Natural Language Inference module for tests."""
+    model = NaturalLanguageInference(
+        model=NaturalLanguageInferenceModel.ROBERTA
+    )
     return model
 
 

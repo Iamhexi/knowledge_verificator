@@ -2,9 +2,16 @@
 
 from dataclasses import dataclass
 from enum import Enum
+import logging
 from pathlib import Path
+import sys
 from typing import Any
 import yaml  # type: ignore[import-untyped]
+
+from knowledge_verificator.nli import NaturalLanguageInferenceModel
+from knowledge_verificator.qg.qg_model_factory import (
+    QuestionGenerationModel,  # type: ignore[import-untyped]
+)
 
 
 class OperatingMode(Enum):
@@ -53,6 +60,10 @@ class Configuration:
     experiment_implementation: Path
     experiment_results: Path
     production_mode: bool
+    server: str
+    port: int
+    question_generation_model: QuestionGenerationModel
+    natural_language_inference_model: NaturalLanguageInferenceModel
 
     def __init__(
         self,
@@ -62,7 +73,33 @@ class Configuration:
         for attribute, value in kwargs.items():
             self.__setattr__(attribute, value)
 
+        logger = logging.Logger('Configuration parser', level=logging.DEBUG)
         # Convert to a proper datatypes.
+        try:
+            self.natural_language_inference_model = (
+                NaturalLanguageInferenceModel[
+                    kwargs['natural_language_inference_model'].upper()
+                ]
+            )
+
+        except KeyError as e:
+            logger.critical(
+                'Unknown configuration option for `natural_language_inference`: %s.',
+                e,
+            )
+            sys.exit(1)
+
+        try:
+            self.question_generation_model = QuestionGenerationModel[
+                kwargs['question_generation_model'].upper()
+            ]
+        except KeyError as e:
+            logger.critical(
+                'Unknown configuration option for `question_generation_model`: %s.',
+                e,
+            )
+            sys.exit(1)
+
         self.mode: OperatingMode = OperatingMode(kwargs['mode'])
         self.experiment_implementation = Path(
             kwargs['experiment_implementation']

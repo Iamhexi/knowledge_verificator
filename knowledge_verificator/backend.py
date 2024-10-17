@@ -6,9 +6,23 @@ from fastapi import FastAPI, Response
 
 from knowledge_verificator.materials import Material, MaterialDatabase
 from knowledge_verificator.io_handler import get_config
+from knowledge_verificator.nli import (
+    NaturalLanguageInference,
+    NaturalLanguageInferenceModel,
+    get_available_nli_models,
+)
+from knowledge_verificator.qg.qg_model_factory import (
+    QuestionGenerationModel,
+    create_model,
+    get_available_qg_models,
+)
 
 ENDPOINTS = FastAPI()
 MATERIAL_DB = MaterialDatabase(materials_dir=get_config().learning_materials)
+QG_MODEL = create_model(get_config().question_generation_model)
+NLI_MODEL = NaturalLanguageInference(
+    get_config().natural_language_inference_model
+)
 
 
 def format_response(data: Any = '', message: str = '') -> dict:
@@ -167,3 +181,93 @@ def update_material(material: Material, response: Response) -> dict:
         message=f'Updated the material with id = {material.id}.',
         data=MATERIAL_DB[material.id],
     )
+
+
+@ENDPOINTS.get('/models/qg')
+def get_qg_model() -> dict:
+    """
+    Endpoint to provide name of the currently chosen Question Generation model,
+    and other available models.
+
+    Returns:
+        dict: Under `data` key, there is `loaded_model` key containing the name
+        of the current Question Generation model, and under `available_models`
+        a list of all the available QG models.
+    """
+    data = {
+        'loaded_model': QG_MODEL.get_model(),
+        'available_models': get_available_qg_models(),
+    }
+    return format_response(data=data)
+
+
+@ENDPOINTS.get('/models/nli')
+def get_nli_model() -> dict:
+    """
+    Endpoint to provide name of the currently chosen Natural Language Inference model and,
+    other available models.
+
+    Returns:
+        dict: Under `data` key, there is `loaded_model` key containing the name
+        of the current Natural Language Inference model, and under `available_models`
+        the list of all the available NLI models.
+    """
+    data = {
+        'loaded_model': NLI_MODEL.get_model(),
+        'available_models': get_available_nli_models(),
+    }
+    return format_response(data=data)
+
+
+@ENDPOINTS.post('/models/qg/{model_name}')
+def set_qg_model(model_name: str, response: Response) -> dict:
+    """
+    Endpoint to set the Question Generation model.
+
+    Args:
+        model_name (str): Name of the desired QG model.
+        response (Response): Instance of response, provided automatically.
+
+    Returns:
+        dict: If failed, only `message` key is available with the explanation
+            of the reasons of the failure. If successful, under `data` key
+            there is `model_name` key with the name of the new model.
+    """
+    try:
+        model = QuestionGenerationModel[model_name]
+        global QG_MODEL  # pylint: disable=global-statement
+
+        QG_MODEL = create_model(model)
+        return format_response(data={'model_name': QG_MODEL.get_model()})
+    except KeyError:
+        response.status_code = 404
+        return format_response(
+            message='Cannot change the Question Generation model because name'
+            f' `{model_name}` has not been recognised.'
+        )
+
+
+@ENDPOINTS.post('/models/nli/{model_name}')
+def set_nli_model(model_name: str, response: Response) -> dict:
+    """
+    Endpoint to set the Natural Language Inference model.
+
+    Args:
+        model_name (str): Name of the desired NLI model.
+        response (Response): Instance of response, provided automatically.
+
+    Returns:
+        dict: If failed, only `message` key is available with the explanation
+        of the reasons of the failure. If successful, under `data` key
+        there is `model_name` key with the name of the new model.
+    """
+    try:
+        model = NaturalLanguageInferenceModel[model_name]
+        NLI_MODEL.set_model(model)
+        return format_response(data={'model_name': NLI_MODEL.get_model()})
+    except KeyError:
+        response.status_code = 404
+        return format_response(
+            message='Cannot change the Natural Language Inference model '
+            f'because name `{model_name}` has not been recognised.'
+        )
