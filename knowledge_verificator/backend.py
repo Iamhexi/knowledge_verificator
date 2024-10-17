@@ -235,7 +235,8 @@ def set_qg_model(model_name: str, response: Response) -> dict:
     """
     try:
         model = QuestionGenerationModel[model_name]
-        global QG_MODEL  # type: ignore[global-statement]
+        global QG_MODEL  # pylint: disable=global-statement
+
         QG_MODEL = create_model(model)
         return format_response(data={'model_name': QG_MODEL.get_model()})
     except KeyError:
