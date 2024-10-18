@@ -1,6 +1,7 @@
 """Main module with CLI definition."""
 
 from pathlib import Path
+import subprocess
 import sys
 
 from knowledge_verificator.io_handler import get_config
@@ -22,6 +23,9 @@ if __name__ == '__main__':
 
         case OperatingMode.BACKEND:
             import uvicorn
+
+            arguments = ['npm', 'run', 'dev']
+            frontend = subprocess.Popen(args=arguments, cwd='frontend')
 
             uvicorn.run(
                 'knowledge_verificator.backend:ENDPOINTS',
