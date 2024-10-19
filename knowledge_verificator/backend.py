@@ -3,9 +3,10 @@
 from typing import Any, Union
 
 from fastapi import FastAPI, Response
+from fastapi.middleware.cors import CORSMiddleware
 
 from knowledge_verificator.materials import Material, MaterialDatabase
-from knowledge_verificator.io_handler import get_config
+from knowledge_verificator.io_handler import config
 from knowledge_verificator.nli import (
     NaturalLanguageInference,
     NaturalLanguageInferenceModel,
@@ -17,12 +18,25 @@ from knowledge_verificator.qg.qg_model_factory import (
     get_available_qg_models,
 )
 
+
+# The allowed origins.
+origins = [
+    f'{config().protocol}://localhost:{config().frontend_port}',
+    f'{config().protocol}://127.0.0.1:{config().frontend_port}',
+    f'{config().protocol}://{config().frontend_address}:{config().frontend_port}',
+]
+
 ENDPOINTS = FastAPI()
-MATERIAL_DB = MaterialDatabase(materials_dir=get_config().learning_materials)
-QG_MODEL = create_model(get_config().question_generation_model)
-NLI_MODEL = NaturalLanguageInference(
-    get_config().natural_language_inference_model
+ENDPOINTS.add_middleware(
+    CORSMiddleware,
+    allow_origins=origins,  # Allows specified origins
+    allow_credentials=True,
+    allow_methods=['*'],  # Allows all methods: GET, POST, etc.
+    allow_headers=['*'],  # Allows all headers
 )
+MATERIAL_DB = MaterialDatabase(materials_dir=config().learning_materials)
+QG_MODEL = create_model(config().question_generation_model)
+NLI_MODEL = NaturalLanguageInference(config().natural_language_inference_model)
 
 
 def format_response(data: Any = '', message: str = '') -> dict:
