@@ -13,24 +13,80 @@
         const result = await response.json();
         learningMaterials = result.data;
     });
+
+    /**
+	 * @type {null}
+	 */
+    let question = null;
+    /**
+	 * @param {string} context
+	 */
+    async function generateQuestion(context) {
+        const body = {
+            context: "context",
+        };
+        const options = {
+            method: 'POST',
+            body: JSON.stringify(body),
+            headers: {
+                'Content-Type': 'application/json' // Make sure to set the content type
+            }
+        };
+        const endpoint = `${API_URL}/generate_question`
+        const response = await fetch(endpoint, options);
+        const result = await response.json();
+        question = result.data.question;
+    }
 </script>
 
 <h1>Database of learning materials</h1>
-{#each learningMaterials as material}
-    <div class="learning-material">
-        {#each material.paragraphs as paragraph}
-            <div class="paragraph-to-learn">
-                <p>{material.title}: {paragraph}</p>
-                <a href="">-></a>
-            </div>
-        {/each}
-        <!-- <p><b>Tags</b>: {material.tags.join(', ')}</p> -->
-    </div>
-{/each}
+{#if !question}
+    {#each learningMaterials as material}
+        <div class="learning-material">
+            {#each material.paragraphs as paragraph}
+                <div class="paragraph-to-learn">
+                    <p>{material.title}: {paragraph}</p>
+                    <button on:click={() => generateQuestion(paragraph)}>&rarr;</button>
+                    {#if question}
+                        <p>Question: {question}</p>
+                    {/if}
+                </div>
+            {/each}
+            <!-- <p><b>Tags</b>: {material.tags.join(', ')}</p> -->
+        </div>
+    {/each}
+{:else}
+    <p>Question: {question}</p>
+    <form method="post" action="/evaluate">
+        <label>
+            <p>Your answer: </p>
+            <textarea class="answer-input" autofocus></textarea>
+        </label>
+        <input value="Check the answer" type="submit">
+    </form>
+{/if}
 <!-- <pre>{JSON.stringify(learningMaterials, null, 2)}</pre> -->
 
 
 <style>
+    label > p {
+        /* padding: 10px; */
+        display: block;
+    }
+
+    input[type="submit"] {
+        display: block;
+    }
+
+    label {
+        height: 10vh;
+    }
+
+    .answer-input {
+        width: 80%;
+        height: 10rem;
+    }
+
     h1 {
         text-transform: uppercase;
     }
@@ -48,10 +104,10 @@
         padding: 1.2rem 2rem 2rem;
     }
 
-    a {
+    button {
         width: 100%;
-        height: 3.5rem;
-        line-height: 3.5rem;
+        /* height: 3.5rem; */
+        /* line-height: 3.5rem; */
         text-align: center;
         text-decoration: none;
         border: 1px solid gray;
@@ -60,13 +116,10 @@
         background-color: darkgray;
         width: 100%;
         display: block;
+        font-size: 2rem;
     }
 
-    a:visited {
-        color: black;
-    }
-
-    a:hover {
+    button:hover {
         cursor: pointer;
     }
 </style>
