@@ -4,7 +4,9 @@ from typing import Any, Union
 
 from fastapi import FastAPI, Response
 from fastapi.middleware.cors import CORSMiddleware
+from pydantic import BaseModel
 
+from knowledge_verificator.answer_chooser import AnswerChooser
 from knowledge_verificator.materials import Material, MaterialDatabase
 from knowledge_verificator.io_handler import config
 from knowledge_verificator.nli import (
@@ -36,6 +38,8 @@ ENDPOINTS.add_middleware(
 )
 MATERIAL_DB = MaterialDatabase(materials_dir=config().learning_materials)
 QG_MODEL = create_model(config().question_generation_model)
+ANSWER_CHOOSER = AnswerChooser()
+
 NLI_MODEL = NaturalLanguageInference(config().natural_language_inference_model)
 
 
@@ -285,3 +289,37 @@ def set_nli_model(model_name: str, response: Response) -> dict:
             message='Cannot change the Natural Language Inference model '
             f'because name `{model_name}` has not been recognised.'
         )
+
+
+class QuestionRequest(BaseModel):
+    """Body parameter of /generate_question endpoint."""
+
+    context: str
+
+
+@ENDPOINTS.post('/generate_question')
+def generate_question(
+    question_context: QuestionRequest, response: Response
+) -> dict:
+    """
+    Endpoint to generate a question to the supplied context using
+    the currently chosen Question Generation model.
+
+    Args:
+        context (str): Context, based on which the question will be generated.
+        response (Response): Instance of response, provided automatically.
+
+    Returns:
+        dict: If a request was successful, under `data` key there is `question` key
+            with a question. Otherwise, under `message` there is an error message.
+    """
+    context = question_context.context
+    answer = ANSWER_CHOOSER.choose_answer(paragraph=context)
+    if not answer:
+        response.status_code = 400
+        message = 'The provided text is not appropriate to generate question. Use a longer one.'
+        return format_response(message=message)
+
+    generated_item = QG_MODEL.generate(context=context, answer=answer)
+    data = {'question': generated_item['question']}
+    return format_response(data=data)
