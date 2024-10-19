@@ -24,14 +24,14 @@ class OperatingMode(Enum):
         produced by the models.
     - CLI - interactive command-line interface mode.
         It allows a user to perform actions in terminal.
-    - BACKEND - an HTTP server is started, which serves as backend.
-        Graphical user interface (GUI) in a form of webpage is served
-        as frontend.
+    - CLIENT_SERVER - an HTTP server is started, which serves as the
+        backend. Graphical user interface (GUI) in a form of webpage
+        is served as the frontend.
     """
 
     EXPERIMENT = 'EXPERIMENT'
     CLI = 'CLI'
-    BACKEND = 'BACKEND'
+    CLIENT_SERVER = 'CLIENT_SERVER'
 
 
 @dataclass
@@ -60,10 +60,13 @@ class Configuration:
     experiment_implementation: Path
     experiment_results: Path
     production_mode: bool
-    server: str
-    port: int
+    backend_address: str
+    backend_port: int
+    frontend_address: str
+    frontend_port: int
     question_generation_model: QuestionGenerationModel
     natural_language_inference_model: NaturalLanguageInferenceModel
+    protocol: str
 
     def __init__(
         self,

@@ -52,8 +52,11 @@ python -m knowledge_verificator
 ### Prerequisites
 You have to have the following tools installed:
 - build and dependency management system: [poetry](https://github.com/python-poetry/poetry)
+- npm - javascript package manager
 
 ### Steps
+
+#### Backend
 1. Clone the repository.
     ```bash
     git clone git@github.com:Iamhexi/knowledge_verificator.git
@@ -74,9 +77,27 @@ As a one-liner:
 ```bash
 git clone git@github.com:Iamhexi/knowledge_verificator.git && cd knowledge_verificator && poetry install --with test
 ```
+
+#### Frontend
+
+1. Change directory to `frontend`.
+    ```bash
+    cd frontend
+    ```
+
+1. Install the modules required by the frontend.
+    ```bash
+    npm install
+    ```
+---
+As a one-liner:
+```bash
+cd frontend && npm install
+```
+
 ---
 
-And then run the application.
+And then run the application (make sure you are in the root directory of the repository).
 ```bash
 poetry run python knowledge_verificator/main.py
 ```

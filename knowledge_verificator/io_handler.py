@@ -44,7 +44,7 @@ def get_argument_parser() -> ArgumentParser:
 
 
 @cache
-def get_config() -> Configuration:
+def config() -> Configuration:
     """
     Get configuration of the system.
 
@@ -55,12 +55,12 @@ def get_config() -> Configuration:
     args = _parser.parse_args()
 
     _configuration_parser = ConfigurationParser(configuration_file=args.config)
-    config = _configuration_parser.parse_configuration()
+    configuration = _configuration_parser.parse_configuration()
 
-    _logging_handler.setLevel(config.logging_level)
+    _logging_handler.setLevel(configuration.logging_level)
     logger.addHandler(_logging_handler)
 
-    return config
+    return configuration
 
 
 console = Console()

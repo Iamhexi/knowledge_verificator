@@ -3,9 +3,12 @@
 from typing import Any, Union
 
 from fastapi import FastAPI, Response
+from fastapi.middleware.cors import CORSMiddleware
+from pydantic import BaseModel
 
+from knowledge_verificator.answer_chooser import AnswerChooser
 from knowledge_verificator.materials import Material, MaterialDatabase
-from knowledge_verificator.io_handler import get_config
+from knowledge_verificator.io_handler import config
 from knowledge_verificator.nli import (
     NaturalLanguageInference,
     NaturalLanguageInferenceModel,
@@ -17,12 +20,27 @@ from knowledge_verificator.qg.qg_model_factory import (
     get_available_qg_models,
 )
 
+
+# The allowed origins.
+origins = [
+    f'{config().protocol}://localhost:{config().frontend_port}',
+    f'{config().protocol}://127.0.0.1:{config().frontend_port}',
+    f'{config().protocol}://{config().frontend_address}:{config().frontend_port}',
+]
+
 ENDPOINTS = FastAPI()
-MATERIAL_DB = MaterialDatabase(materials_dir=get_config().learning_materials)
-QG_MODEL = create_model(get_config().question_generation_model)
-NLI_MODEL = NaturalLanguageInference(
-    get_config().natural_language_inference_model
+ENDPOINTS.add_middleware(
+    CORSMiddleware,
+    allow_origins=origins,  # Allows specified origins
+    allow_credentials=True,
+    allow_methods=['*'],  # Allows all methods: GET, POST, etc.
+    allow_headers=['*'],  # Allows all headers
 )
+MATERIAL_DB = MaterialDatabase(materials_dir=config().learning_materials)
+QG_MODEL = create_model(config().question_generation_model)
+ANSWER_CHOOSER = AnswerChooser()
+
+NLI_MODEL = NaturalLanguageInference(config().natural_language_inference_model)
 
 
 def format_response(data: Any = '', message: str = '') -> dict:
@@ -271,3 +289,37 @@ def set_nli_model(model_name: str, response: Response) -> dict:
             message='Cannot change the Natural Language Inference model '
             f'because name `{model_name}` has not been recognised.'
         )
+
+
+class QuestionRequest(BaseModel):
+    """Body parameter of /generate_question endpoint."""
+
+    context: str
+
+
+@ENDPOINTS.post('/generate_question')
+def generate_question(
+    question_context: QuestionRequest, response: Response
+) -> dict:
+    """
+    Endpoint to generate a question to the supplied context using
+    the currently chosen Question Generation model.
+
+    Args:
+        context (str): Context, based on which the question will be generated.
+        response (Response): Instance of response, provided automatically.
+
+    Returns:
+        dict: If a request was successful, under `data` key there is `question` key
+            with a question. Otherwise, under `message` there is an error message.
+    """
+    context = question_context.context
+    answer = ANSWER_CHOOSER.choose_answer(paragraph=context)
+    if not answer:
+        response.status_code = 400
+        message = 'The provided text is not appropriate to generate question. Use a longer one.'
+        return format_response(message=message)
+
+    generated_item = QG_MODEL.generate(context=context, answer=answer)
+    data = {'question': generated_item['question']}
+    return format_response(data=data)

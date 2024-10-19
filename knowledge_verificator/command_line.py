@@ -2,7 +2,7 @@
 
 from rich.text import Text
 
-from knowledge_verificator.io_handler import logger, console, get_config
+from knowledge_verificator.io_handler import logger, console, config
 from knowledge_verificator.answer_chooser import AnswerChooser
 from knowledge_verificator.materials import MaterialDatabase
 from knowledge_verificator.nli import NaturalLanguageInference, Relation
@@ -42,11 +42,10 @@ def run_cli_mode():
     Raises:
         ValueError:
     """
-    config = get_config()
-    qg_module = create_model(config.question_generation_model)
+    qg_module = create_model(config().question_generation_model)
     ac_module = AnswerChooser()
     nli_module = NaturalLanguageInference(
-        model=config.natural_language_inference_model
+        model=config().natural_language_inference_model
     )
 
     while True:
@@ -58,10 +57,10 @@ def run_cli_mode():
         match user_choice:
             case 'knowledge database':
                 try:
-                    material_db = MaterialDatabase(config.learning_materials)
+                    material_db = MaterialDatabase(config().learning_materials)
                 except FileNotFoundError:
                     console.print(
-                        f'In the `{config.learning_materials}` there is no database. '
+                        f'In the `{config().learning_materials}` there is no database. '
                         'Try using your own materials.'
                     )
                     continue
