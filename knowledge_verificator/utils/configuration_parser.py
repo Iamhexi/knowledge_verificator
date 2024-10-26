@@ -55,33 +55,33 @@ class Configuration:
     """
 
     learning_materials: Path
-    logging_level: str
-    mode: OperatingMode
     experiment_implementation: Path
     experiment_results: Path
-    production_mode: bool
-    backend_address: str
-    backend_port: int
-    frontend_address: str
-    frontend_port: int
     question_generation_model: QuestionGenerationModel
     natural_language_inference_model: NaturalLanguageInferenceModel
-    protocol: str
+    logging_level: str = 'WARNING'
+    mode: OperatingMode = OperatingMode.CLIENT_SERVER
+    production_mode: bool = True
+    backend_address: str = '127.0.0.1'
+    backend_port: int = 8000
+    frontend_address: str = '127.0.0.1'
+    frontend_port: int = 3000
+    protocol: str = 'http'
 
-    def __init__(
-        self,
-        **kwargs,  # Records received from a YAML file.
-    ) -> None:
-        # Assign values to attributes.
-        for attribute, value in kwargs.items():
-            self.__setattr__(attribute, value)
-
+    def __post_init__(self) -> None:
         logger = logging.Logger('Configuration parser', level=logging.DEBUG)
         # Convert to a proper datatypes.
         try:
+            if not isinstance(self.natural_language_inference_model, str):
+                raise ValueError(
+                    'Incorrect value for `natural_language_inference_model` '
+                    'configuration option: '
+                    f'{self.natural_language_inference_model}.'
+                )
+
             self.natural_language_inference_model = (
                 NaturalLanguageInferenceModel[
-                    kwargs['natural_language_inference_model'].upper()
+                    self.natural_language_inference_model.upper()  # pylint: disable=no-member
                 ]
             )
 
@@ -93,8 +93,14 @@ class Configuration:
             sys.exit(1)
 
         try:
+            if not isinstance(self.question_generation_model, str):
+                raise ValueError(
+                    'Incorrect value for `question_generation_model` '
+                    'configuration option: '
+                    f'{self.question_generation_model}.'
+                )
             self.question_generation_model = QuestionGenerationModel[
-                kwargs['question_generation_model'].upper()
+                self.question_generation_model.upper()  # pylint: disable=no-member
             ]
         except KeyError as e:
             logger.critical(
@@ -103,11 +109,9 @@ class Configuration:
             )
             sys.exit(1)
 
-        self.mode: OperatingMode = OperatingMode(kwargs['mode'])
-        self.experiment_implementation = Path(
-            kwargs['experiment_implementation']
-        )
-        self.experiment_results = Path(kwargs['experiment_results'])
+        self.mode: OperatingMode = OperatingMode(self.mode)
+        self.experiment_implementation = Path(self.experiment_implementation)
+        self.experiment_results = Path(self.experiment_results)
 
 
 class ConfigurationParser:
