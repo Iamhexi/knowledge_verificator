@@ -13,6 +13,8 @@ import requests  # type: ignore[import-untyped]
 import uvicorn
 import uvicorn.server
 
+# Using test_config.yaml value is impossible due to the conflict between
+# argparse and pytest packages. So these values need to be specified below:
 SERVER = '127.0.0.1'
 PORT = 8000
 
