@@ -32,7 +32,7 @@
 	 */
     async function generateQuestion(context) {
         const body = {
-            context: "context",
+            context: context,
         };
         const options = {
             method: 'POST',
