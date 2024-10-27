@@ -1,6 +1,17 @@
 <script>
     import { onMount } from "svelte";
     import { API_URL } from "../lib/config.js";
+    import { goto } from '$app/navigation';
+
+    let formData = { context: '', answer: '' };
+
+    const handleSubmit = () => {
+
+        if (typeof window !== 'undefined') {
+        sessionStorage.setItem('formData', JSON.stringify(formData));
+        goto('/evaluate');
+        }
+  };
 
     /**
 	 * @type {any[]}
@@ -45,6 +56,7 @@
         const response = await fetch(endpoint, options);
         const result = await response.json();
         question = result.data.question;
+        formData.context = context;
     }
 </script>
 
@@ -56,25 +68,21 @@
                 <div class="paragraph-to-learn">
                     <p>The paragraph from <i>{material.title}</i>: {truncate(paragraph, 200)}</p>
                     <button on:click={() => generateQuestion(paragraph)}>&rarr;</button>
-                    {#if question}
-                        <p>Question: {question}</p>
-                    {/if}
                 </div>
             {/each}
-            <!-- <p><b>Tags</b>: {material.tags.join(', ')}</p> -->
         </div>
     {/each}
 {:else}
+<form on:submit|preventDefault={handleSubmit}>
     <p>Question: {question}</p>
-    <form method="post" action="/evaluate">
-        <label>
-            <p>Your answer: </p>
-            <textarea class="answer-input" autofocus></textarea>
-        </label>
-        <input value="Check the answer" type="submit">
+    <input type="text" bind:value={formData.context} hidden readonly/>
+    <label>
+        <p>Your answer:</p>
+        <textarea class="answer-input" autofocus bind:value={formData.answer}></textarea>
+    </label>
+    <button class=".submit-answer-button" type="submit">Check the answer</button>
     </form>
 {/if}
-<!-- <pre>{JSON.stringify(learningMaterials, null, 2)}</pre> -->
 
 
 <style>
@@ -83,8 +91,9 @@
         display: block;
     }
 
-    input[type="submit"] {
+    .submit-answer-button {
         display: block;
+        font-size: 10px;
     }
 
     label {
