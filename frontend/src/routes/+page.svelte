@@ -3,13 +3,20 @@
     import { API_URL } from "../lib/config.js";
     import { goto } from '$app/navigation';
 
-    let formData = { context: '', answer: '' };
+    let formData = { context: '', userAnswer: '', correctAnswer: '', question: '' };
+    const minimumAnswerLength = 5;
 
     const handleSubmit = () => {
+        const answerInput = document.querySelector('.answer-input');
+        const answer = String(answerInput.value);
+        if (answer.length < minimumAnswerLength) {
+            alert(`Answer is too short. Minimum length: ${minimumAnswerLength}.`)
+            return;
+        }
 
         if (typeof window !== 'undefined') {
-        sessionStorage.setItem('formData', JSON.stringify(formData));
-        goto('/evaluate');
+            sessionStorage.setItem('formData', JSON.stringify(formData));
+            goto('/evaluate');
         }
   };
 
@@ -38,8 +45,10 @@
 	 * @type {null}
 	 */
     let question = null;
+
     /**
-	 * @param {string} context
+     * Fetch an API endpoint to generate a question based on the provided context.
+	 * @param {string} context Full paragraph of text used as the context.
 	 */
     async function generateQuestion(context) {
         const body = {
@@ -55,9 +64,25 @@
         const endpoint = `${API_URL}/generate_question`
         const response = await fetch(endpoint, options);
         const result = await response.json();
-        question = result.data.question;
+
         formData.context = context;
+        formData.correctAnswer = result.data.answer;
+        formData.question = result.data.question;
+
+        question = result.data.question;
     }
+
+    /**
+     * Make Ctrl + Enter send a form.
+	 * @param {{ key: any; }} event
+	 */
+    function handleKeyDown(event) {
+        // @ts-ignore
+        if (event.ctrlKey && event.key === 'Enter') {
+            handleSubmit();
+        }
+  }
+
 </script>
 
 <h1>Database of learning materials</h1>
@@ -75,12 +100,20 @@
 {:else}
 <form on:submit|preventDefault={handleSubmit}>
     <p>Question: {question}</p>
+    <input type="text" bind:value={formData.question} hidden readonly/>
     <input type="text" bind:value={formData.context} hidden readonly/>
+    <input type="text" bind:value={formData.correctAnswer} hidden readonly/>
     <label>
         <p>Your answer:</p>
-        <textarea class="answer-input" autofocus bind:value={formData.answer}></textarea>
+        <textarea
+            class="answer-input"
+            bind:value={formData.userAnswer}
+            on:keydown={handleKeyDown}
+            required
+            autofocus
+        ></textarea>
     </label>
-    <button class=".submit-answer-button" type="submit">Check the answer</button>
+    <button class="submit-answer-button" type="submit">Check the answer</button>
     </form>
 {/if}
 
@@ -103,10 +136,6 @@
     .answer-input {
         width: 80%;
         height: 10rem;
-    }
-
-    h1 {
-        text-transform: uppercase;
     }
 
     .learning-material {

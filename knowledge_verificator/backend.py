@@ -306,12 +306,13 @@ def generate_question(
     the currently chosen Question Generation model.
 
     Args:
-        context (str): Context, based on which the question will be generated.
+        question_context (QuestionRequest): Context, based on which the question will be generated.
         response (Response): Instance of response, provided automatically.
 
     Returns:
         dict: If a request was successful, under `data` key there is `question` key
-            with a question. Otherwise, under `message` there is an error message.
+            with a question and under `answer` there is an answer.
+            Otherwise, under `message` there is an error message.
     """
     context = question_context.context
     answer = ANSWER_CHOOSER.choose_answer(paragraph=context)
@@ -321,5 +322,35 @@ def generate_question(
         return format_response(message=message)
 
     generated_item = QG_MODEL.generate(context=context, answer=answer)
-    data = {'question': generated_item['question']}
+    data = {'question': generated_item['question'], 'answer': answer}
     return format_response(data=data)
+
+
+class AnswerEvaluationRequest(BaseModel):
+    """Body parameter of /evaluate_answer endpoint."""
+
+    context: str
+    user_answer: str
+
+
+@ENDPOINTS.post('/evaluate_answer')
+def evaluate_answer(evaluation_request: AnswerEvaluationRequest) -> dict:
+    """
+    Endpoint to get an evaluation of an answer provided by a user
+    with the currently chosen Natural Language Inference model.
+
+    Args:
+        evaluation_request (AnswerEvaluationRequest): Context, based on which
+            the evaluated will be provided.
+
+    Returns:
+        dict: Under `data` key there is `evaluation` key
+            with an evaluation.
+    """
+    evaluation = NLI_MODEL.infer_relation(
+        premise=evaluation_request.context,
+        hypothesis=evaluation_request.user_answer,
+    )
+
+    response_data = {'evaluation': evaluation.value}
+    return format_response(data=response_data)
