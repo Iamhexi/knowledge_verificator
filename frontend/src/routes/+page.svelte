@@ -15,6 +15,15 @@
     });
 
     /**
+     * @param {string} text
+     * @param {number} maxLength
+     */
+    function truncate(text, maxLength = 20) {
+        const appendix = maxLength < text.length ? '...' : '';
+        return `${text.slice(0, maxLength - 1)}${appendix}`;
+    }
+
+    /**
 	 * @type {null}
 	 */
     let question = null;
@@ -45,7 +54,7 @@
         <div class="learning-material">
             {#each material.paragraphs as paragraph}
                 <div class="paragraph-to-learn">
-                    <p>{material.title}: {paragraph}</p>
+                    <p>The paragraph from <i>{material.title}</i>: {truncate(paragraph, 200)}</p>
                     <button on:click={() => generateQuestion(paragraph)}>&rarr;</button>
                     {#if question}
                         <p>Question: {question}</p>
@@ -92,20 +101,30 @@
     }
 
     .learning-material {
-        margin: 50px 10px;
+        margin: 50px 0;
         display: flex;
         align-items: center;
         flex-direction: column;
+        width: 100%;
     }
 
     .paragraph-to-learn {
         border: 1px dashed black;
-        margin: 1rem;
-        padding: 1.2rem 2rem 2rem;
+        margin: 1rem auto;
+        padding: 1rem;
+        width: 80%;
+        max-height: 5rem;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .paragraph-to-learn p {
+        text-align: justify;
+        margin-right: 1rem;
     }
 
     button {
-        width: 100%;
         /* height: 3.5rem; */
         /* line-height: 3.5rem; */
         text-align: center;
@@ -114,8 +133,7 @@
         border-radius: 5px;
         padding: 0.5rem;
         background-color: darkgray;
-        width: 100%;
-        display: block;
+        width: 20%;
         font-size: 2rem;
     }
 
