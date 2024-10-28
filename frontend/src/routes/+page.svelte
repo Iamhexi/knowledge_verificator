@@ -99,12 +99,16 @@
     {/each}
 {:else}
 <form on:submit|preventDefault={handleSubmit}>
-    <p>Question: {question}</p>
+    <p>
+        <b>Question:</b>
+        <br>
+        {question}
+    </p>
     <input type="text" bind:value={formData.question} hidden readonly/>
     <input type="text" bind:value={formData.context} hidden readonly/>
     <input type="text" bind:value={formData.correctAnswer} hidden readonly/>
     <label>
-        <p>Your answer:</p>
+        <p><b>Your answer:</b></p>
         <textarea
             class="answer-input"
             bind:value={formData.userAnswer}
@@ -113,7 +117,7 @@
             autofocus
         ></textarea>
     </label>
-    <button class="submit-answer-button" type="submit">Check the answer</button>
+    <button type="submit">&rarr;</button>
     </form>
 {/if}
 
@@ -122,11 +126,6 @@
     label > p {
         /* padding: 10px; */
         display: block;
-    }
-
-    .submit-answer-button {
-        display: block;
-        font-size: 10px;
     }
 
     label {
@@ -162,20 +161,4 @@
         margin-right: 1rem;
     }
 
-    button {
-        /* height: 3.5rem; */
-        /* line-height: 3.5rem; */
-        text-align: center;
-        text-decoration: none;
-        border: 1px solid gray;
-        border-radius: 5px;
-        padding: 0.5rem;
-        background-color: darkgray;
-        width: 20%;
-        font-size: 2rem;
-    }
-
-    button:hover {
-        cursor: pointer;
-    }
 </style>
