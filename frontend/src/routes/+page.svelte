@@ -1,40 +1,24 @@
 <script>
     import { onMount } from "svelte";
     import { API_URL } from "../lib/config.js";
-    import { goto } from '$app/navigation';
+	import LearningMaterial from "./LearningMaterial.svelte";
+	import { loadFormData, saveFormData } from "$lib/utils.js";
+	import { goto } from "$app/navigation";
 
-    let formData = { context: '', userAnswer: '', correctAnswer: '', question: '' };
-
-    /**
-	 * @type {any[]}
-	 */
+    let formData = [];
     let learningMaterials = [];
-    const endpoint = `${API_URL}/materials`;
-
     onMount(async function () {
+        formData = loadFormData();
+        const endpoint = `${API_URL}/materials`;
         const response = await fetch(endpoint);
         const result = await response.json();
         learningMaterials = result.data;
     });
 
     /**
-     * @param {string} text
-     * @param {number} maxLength
-     */
-    function truncate(text, maxLength = 20) {
-        const appendix = maxLength < text.length ? '...' : '';
-        return `${text.slice(0, maxLength - 1)}${appendix}`;
-    }
-
-    /**
-	 * @type {null}
-	 */
-    let question = null;
-
-    /**
-     * Fetch an API endpoint to generate a question based on the provided context.
-	 * @param {string} context Full paragraph of text used as the context.
-	 */
+    * Fetch an API endpoint to generate a question based on the provided context.
+    * @param {string} context Full paragraph of text used as the context.
+    */
     async function generateQuestion(context) {
         const body = {
             context: context,
@@ -54,55 +38,37 @@
         formData.correctAnswer = result.data.answer;
         formData.question = result.data.question;
 
-        question = result.data.question;
+        saveFormData(formData);
     }
-
-
 
 </script>
 
 <h1>Database of learning materials</h1>
-{#if !question}
-    {#each learningMaterials as material}
-        <div class="learning-material">
-            {#each material.paragraphs as paragraph}
-                <div class="paragraph-to-learn">
-                    <p>The paragraph from <i>{material.title}</i>: {truncate(paragraph, 200)}</p>
-                    <button on:click={() => generateQuestion(paragraph)}>&rarr;</button>
-                </div>
-            {/each}
-        </div>
-    {/each}
-{:else}
-    <p>Read a paragraph</p>
-    <p>{formData.context}</p>
-    <button on:click={() => goto('/answer')}>&rarr;</button>
-{/if}
-
+{#each learningMaterials as material}
+    <div class="learning-materials">
+        {#each material.paragraphs as paragraph}
+            <LearningMaterial
+                title={material.title}
+                bind:content={paragraph}
+                onButtonClick={
+                    async () => {
+                        await generateQuestion(paragraph);
+                        goto('/read');
+                    }
+                }
+            >
+            </LearningMaterial>
+        {/each}
+    </div>
+{/each}
 
 <style>
-    .learning-material {
+    .learning-materials {
         margin: 50px 0;
         display: flex;
         align-items: center;
         flex-direction: column;
         width: 100%;
-    }
-
-    .paragraph-to-learn {
-        border: 1px dashed black;
-        margin: 1rem auto;
-        padding: 1rem;
-        width: 80%;
-        max-height: 5rem;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-    }
-
-    .paragraph-to-learn p {
-        text-align: justify;
-        margin-right: 1rem;
     }
 
 </style>

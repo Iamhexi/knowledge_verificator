@@ -1,24 +1,14 @@
 <script>
-	import { goto } from "$app/navigation";
 	import { onMount } from "svelte";
+	import NextButton from "../NextButton.svelte";
+	import { loadFormData, saveFormData } from "$lib/utils";
+	import { goto } from "$app/navigation";
 
     const minimumAnswerLength = 5;
 
-    let formData = { context: '', userAnswer: '', correctAnswer: '', question: '' };
-    /**
-         * @type {string|null}
-         */
-    let evaluation = null;
-
-    function receiveFormData() {
-        if (typeof window !== 'undefined' && sessionStorage.getItem('formData')) {
-        // @ts-ignore
-        formData = JSON.parse(sessionStorage.getItem('formData'));
-        }
-    }
-
-    onMount(async () => {
-        await receiveFormData();
+    let formData = [];
+    onMount(() => {
+        formData = loadFormData();
         formData.userAnswer = '';
     });
 
@@ -30,10 +20,8 @@
             return;
         }
 
-        if (typeof window !== 'undefined') {
-            sessionStorage.setItem('formData', JSON.stringify(formData));
-            goto('/evaluate');
-        }
+        saveFormData(formData);
+        goto('/evaluate');
   };
 
     /**
@@ -67,5 +55,5 @@
             autofocus
         ></textarea>
     </label>
-    <button type="submit">&rarr;</button>
+    <NextButton></NextButton>
 </form>
