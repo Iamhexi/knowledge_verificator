@@ -1,23 +1,4 @@
 
 * {
-    font-family: 'Courier New', Courier, monospace;
-  }
-
-button, input[type="submit"] {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  background-color: gray;
-  color: white;
-  border: none;
-  line-height: 4rem;
-  height: 4rem;
-  width: 20%;
-  border-radius: 5px;
-  font-size: 2rem;
-  padding-bottom: 1rem; /* Centering an arrow with padding. */
-}
-
-button:hover, input[type="submit"]:hover {
-  cursor: pointer;
+  font-family: 'Courier New', Courier, monospace;
 }
