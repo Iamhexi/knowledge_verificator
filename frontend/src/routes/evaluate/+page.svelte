@@ -2,7 +2,6 @@
   import { onMount } from "svelte";
   import { API_URL } from "../../lib/config.js";
   import { showErrorMessage, disableLoader, enableLoader } from "../../lib/utils.js"
-	import { goto } from "$app/navigation";
 
   let formData = { context: '', userAnswer: '', correctAnswer: '', question: '' };
   /**
