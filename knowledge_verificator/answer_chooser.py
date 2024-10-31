@@ -14,7 +14,7 @@ class AnswerChooser:
 
     def __init__(self) -> None:
         self._cache: dict[str, list] = {}
-        dependencies = ('wordnet', 'stopwords', 'punkt')
+        dependencies = ('wordnet', 'stopwords', 'punkt', 'punkt_tab')
         for dependency in tqdm(
             dependencies,
             desc='Downloading required files',
