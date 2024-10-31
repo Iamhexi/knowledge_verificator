@@ -1,4 +1,21 @@
-
 * {
+  box-sizing: border-box;
+  padding: 0;
+  margin: 0;
   font-family: 'Courier New', Courier, monospace;
+}
+
+.page-content {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+}
+
+.long-text-input {
+  width: 94%;
+  margin: 2%;
+  padding: 1%;
+  height: 20vh;
+  resize: none;
 }
