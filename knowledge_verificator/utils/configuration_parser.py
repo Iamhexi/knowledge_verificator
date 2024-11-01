@@ -27,11 +27,15 @@ class OperatingMode(Enum):
     - CLIENT_SERVER - an HTTP server is started, which serves as the
         backend. Graphical user interface (GUI) in a form of webpage
         is served as the frontend.
+    - SERVER - an HTTP server is started as an API. The built-in
+        frontend is not used. This is useful if one wants to build
+        a custom frontend for the existing backend.
     """
 
     EXPERIMENT = 'EXPERIMENT'
     CLI = 'CLI'
     CLIENT_SERVER = 'CLIENT_SERVER'
+    SERVER = 'SERVER'
 
 
 @dataclass
@@ -118,10 +122,39 @@ class ConfigurationParser:
     """Class, which loads and parses a YAML configuration."""
 
     def __init__(self, configuration_file: Path) -> None:
-        """Load a YAML configuration file."""
+        """
+        Load a YAML configuration file and, optionally, re-create a JS file
+        with the most current configuration.
+        """
         self._config_file: Path | None = None
         self._config_data: dict = {}
         self.load_configuration(configuration_file)
+
+        # Update configuration for the built-in frontend only.
+        if self._config_data['mode'] == OperatingMode.CLIENT_SERVER:
+            self.update_javascript_configuration(
+                Path('frontend/src/lib/config.js')
+            )
+
+    def update_javascript_configuration(self, js_config: Path) -> None:
+        """
+        Re-create a JavaScript configuration file to be compliant
+        with a YAML configuration.
+
+        Create a JavaScript configuration file with a constant API_URL, which
+        supplies an URL to backend for the frontend.
+
+        Args:
+            js_config (Path): Path to a JavaScript configuration file.
+        """
+
+        backend_address = self._config_data['backend_address']
+        backend_port = self._config_data['backend_port']
+        protocol = self._config_data['protocol']
+        js_config_content = f"export const API_URL = '{protocol}://{backend_address}:{backend_port}'; // Do not edit manually."
+
+        with open(js_config.resolve(), 'wt', encoding='utf-8') as fd:
+            fd.write(js_config_content)
 
     def parse_configuration(self) -> Configuration:
         """
