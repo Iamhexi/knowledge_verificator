@@ -75,12 +75,16 @@ def wait_for_server_startup(timeout: int = 10) -> None:
     """
     url = f'http://{SERVER}:{PORT}/materials'
     start_time = time.time()
-    while time.time() - start_time < timeout:
+    while (time_left := timeout - (time.time() - start_time)) > 0:
         try:
-            response = requests.get(url, timeout=time.time() - start_time)
+            response = requests.get(url, timeout=time_left)
             if response.status_code == 200:
                 return None
-        except requests.ConnectionError:
+        except (
+            requests.ConnectionError,
+            requests.Timeout,
+            requests.RequestException,
+        ):
             pass
         time.sleep(1)
     raise RuntimeError('Server did not start in time.')
