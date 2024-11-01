@@ -67,7 +67,9 @@ def config() -> Configuration:
     if configuration.production_mode:
 
         def handle_exceptions_in_production_mode(
-            exception_type, exception, traceback
+            exception_type,  # pylint: disable=unused-argument
+            exception,
+            traceback,  # pylint: disable=unused-argument
         ):
             """
             An exception handler for production mode, which hides
