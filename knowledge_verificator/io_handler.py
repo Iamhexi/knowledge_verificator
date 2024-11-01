@@ -7,13 +7,17 @@ from argparse import ArgumentParser
 from functools import cache
 from logging import Logger
 from pathlib import Path
+import sys
 from rich.console import Console
 from rich.logging import RichHandler
+from rich.markup import escape
 
 from knowledge_verificator.utils.configuration_parser import (
     Configuration,
     ConfigurationParser,
 )
+
+console = Console()
 
 
 def get_argument_parser() -> ArgumentParser:
@@ -60,10 +64,29 @@ def config() -> Configuration:
     _logging_handler.setLevel(configuration.logging_level)
     logger.addHandler(_logging_handler)
 
+    if configuration.production_mode:
+
+        def handle_exceptions_in_production_mode(
+            exception_type, exception, traceback
+        ):
+            """
+            An exception handler for production mode, which hides
+            exception_type (the first argument) and traceback
+            (the third argument) whilst printing erros in bold red
+            text.
+            """
+            console.print(
+                f'[bold red]The error has occured: {escape(str(exception))}. [/bold red]'
+            )
+            console.print(
+                'Closing the application to prevent unexpected consequences.'
+            )
+
+        sys.excepthook = handle_exceptions_in_production_mode
+
     return configuration
 
 
-console = Console()
 logger = Logger('main_logger')
 
 _logging_handler = RichHandler(rich_tracebacks=True)
