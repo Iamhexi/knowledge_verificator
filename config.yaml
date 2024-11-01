@@ -4,10 +4,10 @@ production_mode: false
 learning_materials: ./learning_assets
 experiment_implementation: ./tests/model
 experiment_results: ./tests/model/results
-backend_address: 127.0.0.1 # Change also in frontend/src/lib/config.js
-backend_port: 8000 # Change also in frontend/src/lib/config.js
+protocol: http # Either `http` or `https`
+backend_address: 127.0.0.1
+backend_port: 8000
 frontend_address: 127.0.0.1
 frontend_port: 3000
-protocol: http # Either `http` or `https`
 question_generation_model: t5
 natural_language_inference_model: roberta
