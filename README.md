@@ -1,4 +1,5 @@
 # Knowledge Verificator
+[![Main CI pipeline](https://github.com/Iamhexi/knowledge_verificator/actions/workflows/main.yml/badge.svg)](https://github.com/Iamhexi/knowledge_verificator/actions/workflows/main.yml)
 
 **Knowledge Verificator** is a tool for self-learning. It employs *Natural Language Processing* (NLP) techniques to facilitate and increase effectiveness of self-study.
 The project has been created as the Bachelor's Thesis of Igor Sosnowicz.
