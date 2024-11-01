@@ -131,7 +131,8 @@ class ConfigurationParser:
         self.load_configuration(configuration_file)
 
         # Update configuration for the built-in frontend only.
-        if self._config_data['mode'] == OperatingMode.CLIENT_SERVER:
+        config = self.parse_configuration()
+        if config.mode == OperatingMode.CLIENT_SERVER:
             self.update_javascript_configuration(
                 Path('frontend/src/lib/config.js')
             )
@@ -151,7 +152,7 @@ class ConfigurationParser:
         backend_address = self._config_data['backend_address']
         backend_port = self._config_data['backend_port']
         protocol = self._config_data['protocol']
-        js_config_content = f"export const API_URL = '{protocol}://{backend_address}:{backend_port}'; // Do not edit manually."
+        js_config_content = f"export const API_URL = '{protocol}://{backend_address}:{backend_port}'; // Do not edit manually.\n"
 
         with open(js_config.resolve(), 'wt', encoding='utf-8') as fd:
             fd.write(js_config_content)
