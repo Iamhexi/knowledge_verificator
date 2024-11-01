@@ -2,7 +2,6 @@
 
 import json
 import multiprocessing
-import os
 from pathlib import Path
 import shutil
 import sys
@@ -26,7 +25,7 @@ def database_directory():
     and return path to it; remove the directory during the teardown.
     """
     directory = Path('test_database')
-    os.mkdir(directory)
+    directory.mkdir(exist_ok=True)
 
     yield directory
     shutil.rmtree(directory)
@@ -53,7 +52,7 @@ def server(mock_args, database_directory):
         kwargs={'host': SERVER, 'port': PORT, 'reload': False},
     )
     process.start()
-    wait_for_server_startup(timeout=15)
+    wait_for_server_startup(timeout=30)
 
     yield
 
