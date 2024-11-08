@@ -122,7 +122,7 @@ class AnswerChooser:
         paragraph = self.remove_stopwords(paragraph)
 
         words = paragraph.split(' ')
-        words = [self.sanitize(word) for word in words]
+        words = [self.sanitize(word) for word in words if self.sanitize(word)]
         tagged_words = [
             (sanitized_word, self.find_part_of_speech(sanitized_word))
             for sanitized_word in words
