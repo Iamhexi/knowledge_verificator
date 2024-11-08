@@ -1,8 +1,8 @@
 <script>
 	import { onMount } from 'svelte';
-	import NextButton from '../NextButton.svelte';
 	import { loadFormData, saveFormData } from '$lib/utils';
 	import { goto } from '$app/navigation';
+	import Loader from '../Loader.svelte';
 
 	const minimumAnswerLength = 5;
 
@@ -60,7 +60,7 @@
 				autofocus
 			></textarea>
 		</label>
-		<NextButton></NextButton>
+		<Loader callback={async () => {}} />
 	</form>
 </main>
 

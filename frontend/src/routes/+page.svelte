@@ -2,9 +2,8 @@
 	import { onMount } from 'svelte';
 	import { API_URL } from '../lib/config.js';
 	import LearningMaterial from './LearningMaterial.svelte';
-	import { generateQuestion } from '$lib/utils.js';
+	import { generateQuestion, loadFormData } from '$lib/utils.js';
 	import { goto } from '$app/navigation';
-	import NextButton from './NextButton.svelte';
 	import Loader from './Loader.svelte';
 
 	let text = '';
@@ -32,7 +31,7 @@
 		{/each}
 	{/each}
 </div>
-<Loader/>
+
 <div class="text-insertion-wrapper">
 	<h1>My learning material</h1>
 	<p>Insert a paragraph you want to learn:</p>
@@ -43,17 +42,16 @@
 			placeholder="Your learning material goes here..."
 		></textarea>
 	</label>
-	<NextButton
-		on:click={async () => {
-			const minimumInputLength = 15;
-			if (text.length < minimumInputLength) {
-				alert(`Cannot use a learning material of length shorter than ${minimumInputLength} characters.`)
-				return;
-			}
-			await generateQuestion(text);
-			goto('/read');
-		}}
-	></NextButton>
+	<Loader parameters={[text]} callback={async (text) => {
+		const minimumInputLength = 15;
+		if (text.length < minimumInputLength) {
+			alert(`Cannot use a learning material of length shorter than ${minimumInputLength} characters.`)
+			return;
+		}
+
+		await generateQuestion(text);
+		goto('/read');
+	}} />
 </div>
 
 <style>
