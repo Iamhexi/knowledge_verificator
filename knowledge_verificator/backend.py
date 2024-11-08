@@ -28,7 +28,7 @@ origins = [
     f'{config().protocol}://{config().frontend_address}:{config().frontend_port}',
 ]
 
-ENDPOINTS = FastAPI()
+ENDPOINTS = FastAPI(debug=not config().production_mode)
 ENDPOINTS.add_middleware(
     CORSMiddleware,
     allow_origins=origins,  # Allows specified origins
