@@ -1,5 +1,5 @@
 <script>
-	import NextButton from './NextButton.svelte';
+	import Loader from './Loader.svelte';
 	export let title = 'Default title';
 	export let content = 'Default content';
 	export let maxLength = 200;
@@ -18,7 +18,7 @@
 
 <div class="learning-material">
 	<p>The paragraph from <i>{title}</i>: {truncate(content, maxLength)}</p>
-	<NextButton on:click={onButtonClick}></NextButton>
+	<Loader callback={onButtonClick} />
 </div>
 
 <style>

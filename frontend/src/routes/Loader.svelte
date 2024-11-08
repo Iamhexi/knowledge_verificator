@@ -1,26 +1,28 @@
 <script>
     import { writable } from 'svelte/store';
     import { Stretch } from 'svelte-loading-spinners';
-	import { API_URL } from '$lib/config';
 	import { showErrorMessage } from '$lib/utils';
+	import NextButton from './NextButton.svelte';
 
-    // Async callback to be
-    let callback = async () => {return new Promise(resolve => setTimeout(resolve, 1000)); };
-    let parameters = [];
+    // Async callback to be called by a click.
+    export let callback = async () => {return new Promise(resolve => setTimeout(resolve, 1000)); };
+    export let content = "";
+    export let toolipText = "";
+    export let parameters = [];
+
     const loading = writable(false);
 
     /**
-     * Wrap an async callback with a spinner whilst it loads.
-     * @param {function} callback Function to be called in callback.
-     */
+	 * Wrap an async callback with a spinner whilst it loads.
+	 */
     async function provideLoader() {
         loading.set(true);
         let data = null;
         try {
+            console.log(`Parameters: ${parameters}`);
             data = await callback(...parameters);
-            // data = await response.json();
         } catch (error) {
-            // showErrorMessage(`Error while retrieving data from ${endpoint}: ${error}`);
+            showErrorMessage(`Error executing ${callback} with parameters: ${parameters}.`);
         } finally {
             loading.set(false);
             // return data;
@@ -32,4 +34,4 @@
     <Stretch size="60" color="#FF3E00" unit="px" duration="1s" />
 {/if}
 
-<button on:click={provideLoader}>Fetch Data</button>
+<NextButton toolipText={toolipText} on:click={provideLoader} content={content}/>

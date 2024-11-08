@@ -7,7 +7,7 @@
 	export let toolipText = 'Go to the next step.';
 </script>
 
-<Tooltip title={toolipText}>
+<Tooltip title={toolipText ? toolipText : 'Go to the next step.'}>
 	<button
 		class="next-button"
 		type="submit"
@@ -15,7 +15,7 @@
 			dispatch('click');
 		}}
 	>
-		{content}
+		{content ? content : '→'}
 	</button>
 </Tooltip>
 

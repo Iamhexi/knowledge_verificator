@@ -4,6 +4,7 @@
 	import { loadFormData, showErrorMessage, disableLoader, enableLoader, saveFormData, generateQuestion } from '../../lib/utils.js';
 	import NextButton from '../NextButton.svelte';
 	import { goto } from '$app/navigation';
+	import Loader from '../Loader.svelte';
 
 	let formData = [];
 	let evaluation = null;
@@ -96,18 +97,18 @@
 	</main>
 
 	<div class="button-organiser">
-		<NextButton
-			on:click={async () => {
-        formData.answer = '';
-        formData.question = '';
-        saveFormData(formData);
+		<Loader
+			callback={async () => {
+				formData.answer = '';
+				formData.question = '';
+				saveFormData(formData);
 
-        await generateQuestion(formData.context);
-				goto('/read');
+				await generateQuestion(formData.context);
+						goto('/read');
 			}}
 			content="↻"
 			toolipText="Another question from the same learning material."
-		></NextButton>
+		/>
 		<NextButton
 			on:click={() => {
 				goto('/');
