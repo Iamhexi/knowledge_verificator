@@ -5,6 +5,7 @@
 	import { generateQuestion } from '$lib/utils.js';
 	import { goto } from '$app/navigation';
 	import NextButton from './NextButton.svelte';
+	import Loader from './Loader.svelte';
 
 	let text = '';
 	let learningMaterials = [];
@@ -31,6 +32,7 @@
 		{/each}
 	{/each}
 </div>
+<Loader/>
 <div class="text-insertion-wrapper">
 	<h1>My learning material</h1>
 	<p>Insert a paragraph you want to learn:</p>
