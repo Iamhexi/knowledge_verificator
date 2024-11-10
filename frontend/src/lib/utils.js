@@ -8,14 +8,6 @@ export function showErrorMessage(message) {
     alert(`Error: ${message}.`);
 }
 
-export function enableLoader() {
-    // TODO: Implement loader.
-}
-
-export function disableLoader() {
-    // TODO: Implement disabling loader.
-}
-
 export function loadFormData() {
     if (typeof window !== 'undefined' && sessionStorage.getItem('formData')) {
         return JSON.parse(sessionStorage.getItem('formData'));
