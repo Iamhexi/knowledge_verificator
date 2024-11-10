@@ -19,7 +19,6 @@
         loading.set(true);
         let data = null;
         try {
-            console.log(`Parameters: ${parameters}`);
             data = await callback(...parameters);
         } catch (error) {
             showErrorMessage(`Error executing ${callback} with parameters: ${parameters}.`);

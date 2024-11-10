@@ -60,7 +60,7 @@
 				autofocus
 			></textarea>
 		</label>
-		<Loader callback={async () => {}} />
+		<Loader callback={async () => handleSubmit()} />
 	</form>
 </main>
 

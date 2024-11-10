@@ -1,10 +1,12 @@
 <script>
 	import { onMount } from 'svelte';
 	import { API_URL } from '../../lib/config.js';
-	import { loadFormData, showErrorMessage, disableLoader, enableLoader, saveFormData, generateQuestion } from '../../lib/utils.js';
+	import { loadFormData, showErrorMessage, saveFormData, generateQuestion } from '../../lib/utils.js';
 	import NextButton from '../NextButton.svelte';
 	import { goto } from '$app/navigation';
 	import Loader from '../Loader.svelte';
+	import { Stretch } from 'svelte-loading-spinners';
+	import { navigating } from '$app/stores'
 
 	let formData = [];
 	let evaluation = null;
@@ -39,11 +41,12 @@
 		return result.data.evaluation;
 	}
 
+	let isLoading = false;
 	onMount(async () => {
-		enableLoader();
+		isLoading = true;
 		formData = loadFormData();
 		evaluation = await evaluateAnswer(formData.context, formData.userAnswer);
-		disableLoader();
+		isLoading = false;
 	});
 
 	/**
@@ -81,6 +84,12 @@
 		);
 	}
 </script>
+
+{#if isLoading}
+    <div class="loading-overlay">
+        <Stretch size="60" color="black" unit="px" duration="1s" />
+    </div>
+{/if}
 
 {#if evaluation}
 	<main class="feedback-wrapper">
@@ -120,6 +129,19 @@
 {/if}
 
 <style>
+    .loading-overlay {
+        top: 0;
+        left: 0;
+        z-index: 999;
+        width: 100vw;
+        height: 100vh;
+        position: absolute;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        backdrop-filter: blur(10px);
+    }
+
 	.feedback-wrapper {
 		display: flex;
 		flex-direction: column;
