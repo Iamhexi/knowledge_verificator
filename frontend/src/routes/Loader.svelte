@@ -25,13 +25,29 @@
             showErrorMessage(`Error executing ${callback} with parameters: ${parameters}.`);
         } finally {
             loading.set(false);
-            // return data;
         }
     }
 </script>
 
 {#if $loading}
-    <Stretch size="60" color="#FF3E00" unit="px" duration="1s" />
+    <div class="loading-overlay">
+        <Stretch size="60" color="black" unit="px" duration="1s" />
+    </div>
 {/if}
 
 <NextButton toolipText={toolipText} on:click={provideLoader} content={content}/>
+
+<style>
+    .loading-overlay {
+        top: 0;
+        left: 0;
+        z-index: 999;
+        width: 100vw;
+        height: 100vh;
+        position: absolute;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        backdrop-filter: blur(10px);
+    }
+</style>
