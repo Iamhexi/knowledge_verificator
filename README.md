@@ -5,7 +5,7 @@
 The project has been created as the Bachelor's Thesis of Igor Sosnowicz.
 
 Using **Knowledge Verificator** is simple. Step by step:
-1. Insert a paragraph you want to teach yourself or choose something from a databaset of predefined ones.
+1. Insert a paragraph you want to teach yourself or choose something from a database of predefined ones.
 1. **Knowledge Verificator** generates a question for you.
 1. You answer the question.
 1. Your question is evaluated and you get the feedback.
