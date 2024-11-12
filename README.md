@@ -12,40 +12,21 @@ Using **Knowledge Verificator** is simple. Step by step:
 1. The process repeats as long as you like.
 
 
-## Installation
-
-### Install with `pipx`
-
-If you have `pipx` already installed, use:
-
-```bash
-pipx install knowledge-verificator
-```
-
-### Install with `pip`
-
-If you have `pip` already installed, use:
-
-```bash
-pip install knowledge-verificator
-```
-
 ## Usage
 
-### Run with `pipx`
+Before running the **Knowledge Verificator**, you need to [install Docker](https://docs.docker.com/engine/install/).
 
-If you have installed with `pipx`, run with:
-
+When Docker is installed, use the `run.sh` script to start the application:
 ```bash
-pipx run knowledge-verificator
+./run.sh
 ```
+The script handles building the image (approximately 10 minutes)
+and running it (approximately 30 seconds).
+Building the image happens only once, before the first usage of the application.
 
-### Run with `pip`
-
-If you have installed with `pip`, run with:
-
+**Notice**: By default, only CPU is used. To enable GPU support, you have to install Nvidia Container Toolkit and configure it to cooperate with Docker by yourself. Then, you may use:
 ```bash
-python -m knowledge_verificator
+./run.sh --gpu
 ```
 
 ## Development
