@@ -17,6 +17,11 @@ jobs:
         run: |
           docker build -t knowledge_verificator:latest .
 
+      - name: Check disk usage
+        run: |
+          df -h
+          docker system df
+
       - name: Save Docker image as an artifact
         run: |
           docker save knowledge_verificator:latest -o knowledge_verificator.tar
