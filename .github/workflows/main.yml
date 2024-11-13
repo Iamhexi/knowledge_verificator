@@ -48,5 +48,19 @@ jobs:
       - name: Run pylint linter
         run: poetry run pylint knowledge_verificator/
 
-      - name: Run the automated test
+      - name: Run the automated tests
         run: poetry run pytest -v
+
+      - name: Build Docker image
+        run: |
+          docker build -t knowledge_verificator:latest .
+
+      - name: Save Docker image as an artifact
+        run: |
+          docker save knowledge_verificator:latest -o knowledge_verificator.tar
+
+      - name: Upload Docker image artifact
+        uses: actions/upload-artifact@v3
+        with:
+          name: knowledge_verificator
+          path: knowledge_verificator.tar
