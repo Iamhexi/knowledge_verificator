@@ -37,7 +37,7 @@ done
 # Check if the Docker image exists
 if $REBUILD || ! sudo docker image inspect "$DOCKER_IMAGE_TAG" > /dev/null 2>&1; then
     echo "Building Docker image $DOCKER_IMAGE_TAG..."
-    sudo docker build --platform linux/amd64,linux/arm64 -t "$DOCKER_IMAGE_TAG" .
+    sudo docker build -t "$DOCKER_IMAGE_TAG" .
 else
     echo "Docker image $DOCKER_IMAGE_TAG already exists."
 fi
