@@ -13,17 +13,44 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
 
-      - name: Build Docker image
+      - name: Clean up Docker
         run: |
-          docker build -t knowledge_verificator:latest .
+          echo "Cleaning up unused Docker images and resources..."
+          docker system prune -a -f --volumes
 
-      - name: Check disk usage
+      - name: Remove unnecessary software
         run: |
+          sudo rm -rf \
+            /opt/hostedtoolcache \
+            "$AGENT_TOOLSDIRECTORY" \
+            /opt/google/chrome \
+            /opt/microsoft/msedge \
+            /opt/microsoft/powershell \
+            /opt/pipx \
+            /usr/lib/mono \
+            /usr/local/julia* \
+            /usr/local/lib/android \
+            /usr/local/lib/node_modules \
+            /usr/local/share/chromium \
+            /usr/local/share/powershell \
+            /usr/share/dotnet \
+            /usr/share/swift
+          df -h /
+
+      - name: Check disk usage before build
+        run: |
+          echo "Disk usage before build:"
           df -h
           docker system df
 
+      - name: Build Docker image
+        run: |
+          echo "Building Docker image..."
+          docker build -t knowledge_verificator:latest .
+
       - name: Save Docker image as an artifact
         run: |
+          echo "Saving Docker image as an artifact..."
           docker save knowledge_verificator:latest -o knowledge_verificator.tar
 
       - name: Upload Docker image artifact
@@ -31,6 +58,12 @@ jobs:
         with:
           name: knowledge_verificator
           path: knowledge_verificator.tar
+
+      - name: Check disk usage after build
+        run: |
+          echo "Disk usage after build:"
+          df -h
+          docker system df
 
 permissions:
   contents: read
