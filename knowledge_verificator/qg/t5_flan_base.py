@@ -72,4 +72,4 @@ class T5FlanBase(QuestionGeneration):
         Returns:
             str: Name of the model.
         """
-        return 'T5'
+        return 'FLAN T5'
