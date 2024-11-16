@@ -1,4 +1,4 @@
-# Uses a multi-architecture Linux Arch image, instead of offical x86_64 only.
+# Uses a multi-architecture Linux Arch image, instead of official x86_64 only.
 FROM ljmf00/archlinux:latest
 WORKDIR /knowledge_verificator
 COPY . .
