@@ -29,6 +29,7 @@ pylint-pytest = "^1.1.8"
 pytest = "^6.2.0"
 mypy = "^1.11.2"
 ruff = "^0.6.5"
+rouge-score = "^0.1.2"
 
 [tool.ruff]
 include = ["*.py"]
