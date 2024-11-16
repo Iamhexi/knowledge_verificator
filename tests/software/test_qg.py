@@ -3,7 +3,7 @@
 import pytest
 
 from transformers import set_seed  # type: ignore[import-untyped]
-from knowledge_verificator.qg.t5 import T5FineTuned
+from knowledge_verificator.qg.t5_flan_base import T5FlanBase
 
 
 @pytest.fixture
@@ -13,7 +13,7 @@ def qg():
     the Question Generation model.
     """
     set_seed(0)
-    question_generation = T5FineTuned()
+    question_generation = T5FlanBase()
     return question_generation
 
 

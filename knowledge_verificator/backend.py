@@ -322,7 +322,10 @@ def generate_question(
         return format_response(message=message)
 
     generated_item = QG_MODEL.generate(context=context, answer=answer)
-    data = {'question': generated_item['question'], 'answer': answer}
+    data = {
+        'question': generated_item['question'],
+        'answer': generated_item['answer'],
+    }
     return format_response(data=data)
 
 
