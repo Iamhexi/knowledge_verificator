@@ -42,9 +42,9 @@ class T5FlanBase(QuestionGeneration):
         ).input_ids.to(self.device)
         output_ids = self.model.generate(
             input_ids,
-            max_length=100,  # Maximum length of the output
+            max_length=100,
             temperature=0.5,  # Adjust temperature for randomness
-            top_k=50,  # Limit to top-k words
+            top_k=100,  # Limit to top-k words
             top_p=0.95,  # Nucleus sampling
             do_sample=True,  # Enable sampling
         )
