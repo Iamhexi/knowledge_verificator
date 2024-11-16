@@ -101,7 +101,7 @@
 		</p>
 		<p><b>Question:</b> {formData.question}</p>
 		<p><b>Your answer:</b> {formData.userAnswer}</p>
-		<p><b>The correct answer:</b> {formData.correctAnswer}</p>
+		<p><b>The suggested answer:</b> {formData.correctAnswer}</p>
 		<p><b>The context:</b> {formData.context}</p>
 	</main>
 
