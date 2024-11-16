@@ -19,7 +19,7 @@ class T5FineTuned(QuestionGeneration):
         )
 
         self.model = T5ForConditionalGeneration.from_pretrained(
-            self._trained_model_path,
+            self._trained_model_path, device_map='auto'
         )
 
         self.tokenizer = T5Tokenizer.from_pretrained(
@@ -31,7 +31,7 @@ class T5FineTuned(QuestionGeneration):
         self.device = torch.device(
             'cuda' if torch.cuda.is_available() else 'cpu'
         )
-        self.model = self.model.to(self.device)
+        self.model = self.model  # .to(self.device)
         self.max_length = 32
         self.model.eval()
 

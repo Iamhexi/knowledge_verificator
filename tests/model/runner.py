@@ -21,6 +21,9 @@ class Metric(Enum):
     """List of metrics available."""
 
     COSINE_SIMILARITY = 0
+    BLEU_4 = 1
+    METEOR = 2
+    ROUGE_3 = 3
 
 
 @dataclass
