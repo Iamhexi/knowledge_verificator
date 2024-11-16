@@ -25,7 +25,8 @@ def calculate_bleu_4(reference: str, hypothesis: str) -> float:
 
 def calculate_rouge_n(reference: str, hypothesis: str, n: int) -> float:
     """
-    Calculate the ROUGE-N (Recall-Oriented Understudy for Gisting Evaluation) score.
+    Calculate an average of precision, recall and f-measure from
+    the ROUGE-N (Recall-Oriented Understudy for Gisting Evaluation) score.
 
     Args:
         reference (str): A reference sentence.
@@ -35,14 +36,17 @@ def calculate_rouge_n(reference: str, hypothesis: str, n: int) -> float:
     Returns:
         float: Value of the ROUGE-N score.
     """
-    # ROUGE-N (N-gram) scoring
     scorer = rouge_scorer.RougeScorer([f'rouge{n}'], use_stemmer=True)
-    return scorer.score(target=reference, prediction=hypothesis)[f'rouge{n}']
+    precision, recall, fmeasure = scorer.score(
+        target=reference, prediction=hypothesis
+    )[f'rouge{n}']
+    return (precision + recall + fmeasure) / 3
 
 
 def calculate_rouge_lcs(reference: str, hypothesis: str) -> float:
     """
-    Calculate the ROUGE-LCS (Longest Common Subsequence) score.
+    Calculate an average of precision, recall and f-measure from
+    the ROUGE-LCS (Longest Common Subsequence) score.
 
     Args:
         reference (str): A reference sentence.
@@ -51,9 +55,11 @@ def calculate_rouge_lcs(reference: str, hypothesis: str) -> float:
     Returns:
         float: Value of the ROUGE-LCS score.
     """
-    # ROUGE-LCS (Longest Common Subsequence) scoring
     scorer = rouge_scorer.RougeScorer(['rougeL'], use_stemmer=True)
-    return scorer.score(target=reference, prediction=hypothesis)['rougeL']
+    precision, recall, fmeasure = scorer.score(
+        target=reference, prediction=hypothesis
+    )['rougeL']
+    return (precision + recall + fmeasure) / 3
 
 
 def calculate_nist(reference: str, hypothesis: str) -> float:
