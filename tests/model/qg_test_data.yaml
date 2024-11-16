@@ -17,3 +17,18 @@
     context: To calculate a word embedding vector for the provided sentence, you would typically use a pre-trained word embedding model such as Word2Vec, GloVe, or FastText. These models convert words into numerical vectors based on their semantic meanings and contexts.
     question: What is used to convert a setence to a word embedding vector?
     answer: Pre-trained word embedding model, e.g. Word2Vec, GloVE, FastText.
+
+- item:
+    context: I have two apples. I want to buy three oranges, three peaches, and an apple.
+    question: If I would satisfy my wishes, how many apples would I have?
+    answer: I would have three apples.
+
+- item:
+    context: Creatine may enhance athletic performance. It contributes to rapid energy production and may enhance power or speed bursts requiring short periods of anaerobic activity. The reason could be related to the association of creatine supplementation and increased glycogen storage in muscle. Glycogen can quickly release glucose, one of the best sources of instant energy.
+    question: In which sports the creatine has potential to improve athletic performance?
+    answer: In sports where short periods of anaerobic activity occur.
+
+- item:
+    context: Unlike over-the-counter and prescription drugs, the FDA does not regulate the accuracy of supplement contents. So, there is always the potential that a creatine supplement contains less or more than the amount on the label. Also, the supplement may contain other ingredients that could potentially be harmful for you.
+    question: Is it guaranteed that creatine is always safe?
+    answer: No, there is the potential that the creatine supplement may contain some undocumented and harmful ingredient.

@@ -3,14 +3,14 @@
 from enum import Enum
 from knowledge_verificator.qg.base import QuestionGeneration
 
-# from knowledge_verificator.qg.t5_fine_tuned import T5FineTuned
+from knowledge_verificator.qg.t5_fine_tuned import T5FineTuned
 from knowledge_verificator.qg.t5_flan_base import T5FlanBase
 
 
 class QuestionGenerationModel(Enum):
     """Enumeration with the available Question Generation models."""
 
-    # T5 = T5FineTuned
+    T5 = T5FineTuned
     FLAN_T5 = T5FlanBase
 
 

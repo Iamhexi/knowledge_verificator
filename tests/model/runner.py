@@ -133,11 +133,24 @@ class ExperimentRunner:
         ):
             console.print(f'Running {experiment.__name__}...')
             result = experiment()
-            results.append(result)
+            if isinstance(result, Result):
+                results.append(result)
+            elif isinstance(result, list):
+                results.extend(result)
+            else:
+                raise TypeError(
+                    f'Running an experiment {experiment.__name__} returned '
+                    'output of the '
+                    f'type {type(result)}. It cannot be handled.'
+                )
 
         experimental_results = generate_test_summary_in_csv(results=results)
         current_datetime = datetime.now().strftime('%H_%M_%S_%Y_%m_%d')
         create_text_file(
             path=f'tests/model/results/qg_{current_datetime}.csv',
             content=experimental_results,
+        )
+        console.print(
+            'The results of the last experiments are stored in the tests/model/results'
+            f'/qg_{current_datetime}.csv file.'
         )
