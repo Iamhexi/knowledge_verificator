@@ -10,7 +10,7 @@ RUN yes | pacman -Syu npm python3 python-poetry
 RUN poetry install --no-root --no-dev
 
 # Install the frontend with its JavaScript modules.
-RUN cd frontend && npm install
+RUN npm install --prefix frontend
 
 # Expose the frontend port.
 EXPOSE 3000
