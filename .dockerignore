@@ -9,8 +9,10 @@ tests/
 .coverage
 .pre-commit-config.yaml
 run.sh
+# Assets are mounted as a volume.
+learning_assets/*
 
-# Frontend files
+# Frontend files.
 frontend/node_modules
 frontend/.output
 frontend/.vercel
