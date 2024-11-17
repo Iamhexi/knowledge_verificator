@@ -3,6 +3,7 @@
 DOCKER_IMAGE_TAG="imahexi/knowledge_verificator"
 REBUILD=false
 USE_GPU=false
+HOST_DIRECTORY=$(realpath ./learning_assets)
 
 # Function to display help information
 show_help() {
@@ -42,8 +43,8 @@ else
     echo "Docker image $DOCKER_IMAGE_TAG already exists."
 fi
 
-# Prepare the docker run command
-DOCKER_RUN_CMD="sudo docker run --network=host"
+# Prepare the Docker run command
+DOCKER_RUN_CMD="sudo docker run --network=host -v $HOST_DIRECTORY:/learning_assets"
 
 # Add GPU support if --gpu is specified
 if $USE_GPU; then
