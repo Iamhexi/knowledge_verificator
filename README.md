@@ -31,12 +31,14 @@ Building the image happens only once, before the first usage of the application.
 
 ## Development
 
+If you are interested in contributing to the project by submitting source code, you have to have finish all the steps described below.
+
 ### Prerequisites
 You have to have the following tools installed:
-- build and dependency management system: [poetry](https://github.com/python-poetry/poetry)
-- npm - javascript package manager
+- the Python build and dependency management system: [poetry](https://github.com/python-poetry/poetry)
+- the JavaScript package manager: [npm](https://docs.npmjs.com/)
 
-### Steps
+### Installation Steps
 
 #### Backend
 1. Clone the repository.
@@ -53,31 +55,15 @@ You have to have the following tools installed:
     ```bash
     poetry install --with test
     ```
----
-As a one-liner:
-
-```bash
-git clone git@github.com:Iamhexi/knowledge_verificator.git && cd knowledge_verificator && poetry install --with test
-```
 
 #### Frontend
 
-1. Change directory to `frontend`.
-    ```bash
-    cd frontend
-    ```
-
-1. Install the modules required by the frontend.
-    ```bash
-    npm install
-    ```
----
-As a one-liner:
+Install the modules required by the frontend.
 ```bash
-cd frontend && npm install
+npm install --prefix frontend
 ```
 
----
+#### Running
 
 And then run the application (make sure you are in the root directory of the repository).
 ```bash
