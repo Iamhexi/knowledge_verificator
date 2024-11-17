@@ -21,8 +21,8 @@ def qg():
     'question,answer,context',
     (
         (
-            'Where is the red apple located?',
-            'Tree',
+            'What is the color of the apple?',
+            'red',
             'The red apple is on a tree.',
         ),
     ),
