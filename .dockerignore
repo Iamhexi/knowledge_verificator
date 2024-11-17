@@ -1,0 +1,12 @@
+.git
+.github/
+.*_cache
+*/.*_cache
+dist/
+examples/
+frontend/node_modules
+htmlcov/
+tests/
+.coverage
+.pre-commit-config.yaml
+run.sh

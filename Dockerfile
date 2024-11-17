@@ -1,10 +1,12 @@
 # Uses a multi-architecture Linux Arch image, instead of official x86_64 only.
 FROM ljmf00/archlinux:base-20241115004222
 WORKDIR /knowledge_verificator
-COPY . .
 
 # Install pre-requisites.
 RUN yes | pacman -Syu npm python3 python-poetry
+
+# Copy all files.
+COPY . .
 
 # Install the backend's dependencies.
 RUN poetry install --no-root --no-dev

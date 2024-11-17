@@ -59,13 +59,13 @@ jobs:
       - name: Save Docker image as an artifact
         run: |
           echo "Saving Docker image as an artifact..."
-          docker save knowledge_verificator:latest -o knowledge_verificator.tar
+          docker save knowledge_verificator:latest | gzip -9 > knowledge_verificator.tar.gz
 
       - name: Upload Docker image artifact
         uses: actions/upload-artifact@v3
         with:
           name: knowledge_verificator
-          path: knowledge_verificator.tar
+          path: knowledge_verificator.tar.gz
 
       - name: Check disk usage after build
         run: |
