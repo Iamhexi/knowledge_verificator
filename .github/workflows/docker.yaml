@@ -17,6 +17,8 @@ jobs:
         run: |
           echo "Cleaning up unused Docker images and resources..."
           docker system prune -a -f --volumes
+          docker image prune -f
+          docker volume prune -f
 
       - name: Remove unnecessary software
         run: |
@@ -47,6 +49,12 @@ jobs:
         run: |
           echo "Building Docker image..."
           docker build -t knowledge_verificator:latest .
+
+      - name: Check disk usage after build
+        run: |
+          echo "Disk usage after build:"
+          df -h
+          docker system df
 
       - name: Save Docker image as an artifact
         run: |
