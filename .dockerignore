@@ -4,9 +4,23 @@
 */.*_cache
 dist/
 examples/
-frontend/node_modules
 htmlcov/
 tests/
 .coverage
 .pre-commit-config.yaml
 run.sh
+
+# Frontend files
+frontend/node_modules
+frontend/.output
+frontend/.vercel
+frontend/.svelte-kit
+frontend/build
+frontend/.DS_Store
+frontend/Thumbs.db
+frontend/.env
+frontend/.env.*
+frontend/!.env.example
+frontend/!.env.test
+frontend/vite.config.js.timestamp-*
+frontend/vite.config.ts.timestamp-*
