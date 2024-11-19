@@ -1,0 +1,26 @@
+Debugging in Software Development
+---
+debugging, programming, software development, bug, https://en.wikipedia.org/wiki/Computer_programming
+---
+Debugging is an important task in the software development process since having
+defects in a program have significant consequences for its users.
+Some languages are more prone to some kinds of faults because their specification
+does not require compilers to perform as much checking as other languages.
+Use of a static code analysis tool can help detect some possible problems.
+Normally the first step in debugging is to attempt to reproduce the problem. This can be a non-trivial task, for example as with parallel processes or some unusual software bugs.
+Also, specific user environment and usage history can make it difficult to reproduce the problem.
+
+After the bug is reproduced, the input of the program may need to be simplified to make it easier to debug.
+For example, when a bug in a compiler can make it crash when parsing some large source file,
+a simplification of the test case that results in only few lines from the original source file
+can be sufficient to reproduce the same crash.
+Trial-and-error/divide-and-conquer is needed: the programmer will try to remove some parts of the original
+test case and check if the problem still exists.
+When debugging the problem in a GUI, the programmer can try to skip some user interaction from the original
+problem description and check if the remaining actions are sufficient for bugs to appear.
+Scripting and breakpointing are also part of this process.
+
+Debugging is often done with IDEs.
+Standalone debuggers like GDB are also used, and these often provide less of a visual environment,
+usually using a command line.
+Some text editors such as Emacs allow GDB to be invoked through them, to provide a visual environment.
