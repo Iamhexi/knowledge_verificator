@@ -1,0 +1,12 @@
+Accessible Websites
+---
+website, accessibility, WCAG, https://www.wcag.com/resource/digital-accessibility-myths-facts/
+---
+No automated website evaluation tool can solve for total digital accessibility.
+That said, automated scanning and testing tools are cost-effective, easy to use,
+and can quickly catch a broad range of issues across websites of all sizes with all sorts of content.
+Bottom line—keep in mind that if all you use is an automated scanning tool,
+75 percent or more of the WCAG success criteria aren’t even being tested.
+No artificial intelligence has been able to replicate the human mind in testing accessibility.
+The only way to get a true and comprehensive picture of the accessibility of your digital assets
+is to include human testing performed by people with a variety of disabilities using different assistive technologies.

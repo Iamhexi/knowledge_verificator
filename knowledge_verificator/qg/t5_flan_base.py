@@ -54,8 +54,10 @@ class T5FlanBase(QuestionGeneration):
 
         input_text = (
             f'TEXT:\n{context}\n\n---\nPlease answer to the following '
-            'question based on TEXT. Do not answer directly from TEXT. '
-            f'{question}'
+            'question based on TEXT. '
+            f'{question}\n'
+            'Do not cite TEXT while answering.'
+            'Explain your reasoning step by step.'
         )
         input_ids = self.tokenizer(
             input_text, return_tensors='pt'
