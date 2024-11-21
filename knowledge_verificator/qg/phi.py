@@ -1,26 +1,36 @@
 """The module with implementation of fine-tuned version of T5 (called FLAN T5)."""
 
 import warnings
-from transformers import AutoTokenizer, AutoModelForSeq2SeqLM  # type: ignore[import-untyped]
+from transformers import AutoTokenizer, AutoModelForCausalLM  # type: ignore[import-untyped]
 import torch
 from knowledge_verificator.qg.base import QuestionGeneration
 
 
-class T5FlanBase(QuestionGeneration):
+class Phi(QuestionGeneration):
     """Class for generating question based on supplied context."""
 
     def __init__(self) -> None:
         warnings.filterwarnings('ignore', category=FutureWarning)
-        self.tokenizer = AutoTokenizer.from_pretrained('google/flan-t5-large')
-        self.model = AutoModelForSeq2SeqLM.from_pretrained(
-            'google/flan-t5-large', device_map='auto'
+        model_path = 'microsoft/phi-1_5'
+        self.tokenizer = AutoTokenizer.from_pretrained(model_path)
+        self.model = AutoModelForCausalLM.from_pretrained(
+            model_path, device_map='auto'
         )
 
         self.device = torch.device(
             'cuda' if torch.cuda.is_available() else 'cpu'
         )
-        self.model = self.model  # .to(self.device)
-        self.model.eval()
+
+    def _send_prompt(self, prompt: str) -> str:
+        max_new_tokens = 64
+        input_ids = self.tokenizer(
+            prompt, return_tensors='pt', return_attention_mask=False
+        ).input_ids.to(self.device)
+        output_ids = self.model.generate(
+            input_ids,
+            max_new_tokens=max_new_tokens,
+        )
+        return self.tokenizer.decode(output_ids[0], skip_special_tokens=True)
 
     def generate(self, answer: str, context: str) -> dict[str, str]:
         """
@@ -37,31 +47,14 @@ class T5FlanBase(QuestionGeneration):
             f'TEXT:\n{context}\n\n---\nAsk a question about TEXT. '
             'Your question cannot be taken directly from the text.'
         )
-        input_ids = self.tokenizer(
-            input_text, return_tensors='pt'
-        ).input_ids.to(self.device)
-        output_ids = self.model.generate(
-            input_ids,
-            max_length=100,
-            temperature=0.5,  # Adjust temperature for randomness
-            top_k=500,  # Limit to top-k words
-            top_p=0.95,  # Nucleus sampling
-            do_sample=True,  # Enable sampling
-        )
-        question = self.tokenizer.decode(
-            output_ids[0], skip_special_tokens=True
-        )
+        question = self._send_prompt(prompt=input_text)
 
         input_text = (
             f'TEXT:\n{context}\n\n---\nPlease answer to the following '
             'question based on TEXT. Do not answer directly from TEXT. '
             f'{question}'
         )
-        input_ids = self.tokenizer(
-            input_text, return_tensors='pt'
-        ).input_ids.to(self.device)
-        output_ids = self.model.generate(input_ids)
-        answer = self.tokenizer.decode(output_ids[0], skip_special_tokens=True)
+        answer = self._send_prompt(prompt=input_text)
 
         return {'question': question, 'answer': answer, 'context': context}
 
@@ -72,4 +65,4 @@ class T5FlanBase(QuestionGeneration):
         Returns:
             str: Name of the model.
         """
-        return 'FLAN T5'
+        return 'Phi'

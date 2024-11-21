@@ -3,8 +3,11 @@
 from enum import Enum
 from knowledge_verificator.qg.base import QuestionGeneration
 
+from knowledge_verificator.qg.gemma import Gemma
 from knowledge_verificator.qg.t5_fine_tuned import T5FineTuned
 from knowledge_verificator.qg.t5_flan_base import T5FlanBase
+from knowledge_verificator.qg.tiny_llama import TinyLama
+from knowledge_verificator.qg.phi import Phi
 
 
 class QuestionGenerationModel(Enum):
@@ -12,6 +15,9 @@ class QuestionGenerationModel(Enum):
 
     T5 = T5FineTuned
     FLAN_T5 = T5FlanBase
+    TINY_LLAMA = TinyLama
+    GEMMA = Gemma
+    PHI = Phi
 
 
 def create_model(model: QuestionGenerationModel) -> QuestionGeneration:
