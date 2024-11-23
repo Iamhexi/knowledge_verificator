@@ -74,11 +74,11 @@ def config() -> Configuration:
             """
             An exception handler for production mode, which hides
             exception_type (the first argument) and traceback
-            (the third argument) whilst printing erros in bold red
+            (the third argument) whilst printing errors in bold red
             text.
             """
             console.print(
-                f'[bold red]The error has occured: {escape(str(exception))}. [/bold red]'
+                f'[bold red]The error has occurred: {escape(str(exception))}. [/bold red]'
             )
             console.print(
                 'Closing the application to prevent unexpected consequences.'
