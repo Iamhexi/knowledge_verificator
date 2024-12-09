@@ -43,8 +43,11 @@ else
     echo "Docker image $DOCKER_IMAGE_TAG already exists."
 fi
 
+frontend_port=$(grep 'frontend_port:' config.yaml | awk '{print $2}')
+
 # Prepare the Docker run command
-DOCKER_RUN_CMD="sudo docker run --network=host -v $HOST_DIRECTORY:/learning_assets"
+# --network=host
+DOCKER_RUN_CMD="sudo docker run -p $frontend_port:$frontend_port -v $HOST_DIRECTORY:/learning_assets"
 
 # Add GPU support if --gpu is specified
 if $USE_GPU; then

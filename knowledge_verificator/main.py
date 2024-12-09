@@ -8,7 +8,6 @@ import uvicorn
 from knowledge_verificator.io_handler import config
 from knowledge_verificator.utils.configuration_parser import OperatingMode
 from knowledge_verificator.command_line import run_cli_mode
-from tests.model.runner import ExperimentRunner
 
 
 def run_backend() -> None:
@@ -38,6 +37,8 @@ def run_frontend() -> subprocess.Popen:
 if __name__ == '__main__':
     match config().mode:
         case OperatingMode.EXPERIMENT:
+            from tests.model.runner import ExperimentRunner
+
             experiment_directory = Path(config().experiment_implementation)
             runner = ExperimentRunner(directory=experiment_directory)
             runner.run()
