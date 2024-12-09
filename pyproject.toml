@@ -19,6 +19,9 @@ pyyaml = "^6.0.2"
 requests = "^2.32.3"
 protobuf = "^5.28.2"
 accelerate = ">=0.26.0"
+gguf = "^0.10.0"
+numpy = "==1.26.3"
+llama-cpp-python = "^0.3.2"
 
 [tool.poetry.group.test]
 
